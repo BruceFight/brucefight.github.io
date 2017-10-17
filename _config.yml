@@ -2,7 +2,7 @@ title: 猛龙过江 - GitHub.io
 description: 猛龙过江CSDN博客
 google_analytics: 
 show_downloads: true
-theme: jekyll-theme-tactile
+theme: jekyll-theme-architect
 
 gems:
   - jekyll-mentions
