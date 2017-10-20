@@ -64,7 +64,7 @@
 
           <p class="repo-owner">如果你真的想要撩我,那就加我微信 -> <img src="../source/mainface_images/Wechat_HonBoom.jpeg" width="267" height="355"></p>
 
-          &copy HonBoom
+
         </aside>
       </div>
     </div>
