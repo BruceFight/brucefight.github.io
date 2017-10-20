@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link href="https://fonts.googleapis.com/css?family=Architects+Daughter" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" href="/assets/css/style.css?v=e13a31b2b29d3d68377376c13d9e66c74fdddaf5" media="screen" type="text/css">
+    <link rel="stylesheet" href="/assets/css/style.css?v=7936b73355c54d886bba4b5880614e62b45fef93" media="screen" type="text/css">
     <link rel="stylesheet" href="/assets/css/print.css" media="print" type="text/css">
 
     <!--[if lt IE 9]>
@@ -14,16 +14,16 @@
     <![endif]-->
 
 <!-- Begin Jekyll SEO tag v2.3.0 -->
-<title>www.nextbeginning.com | Welcome</title>
-<meta property="og:title" content="www.nextbeginning.com">
+<title>iOS(OC)面试题目整理 – HonBoom | NextBeginning</title>
+<meta property="og:title" content="iOS(OC)面试题目整理 – HonBoom">
 <meta property="og:locale" content="en_US">
-<meta name="description" content="Welcome">
-<meta property="og:description" content="Welcome">
-<link rel="canonical" href="http://localhost:4000/blogs/testone.html">
-<meta property="og:url" content="http://localhost:4000/blogs/testone.html">
-<meta property="og:site_name" content="www.nextbeginning.com">
+<meta name="description" content="Are you mushroom ?">
+<meta property="og:description" content="Are you mushroom ?">
+<link rel="canonical" href="http://localhost:4000/source/blogs/testone.html">
+<meta property="og:url" content="http://localhost:4000/source/blogs/testone.html">
+<meta property="og:site_name" content="NextBeginning">
 <script type="application/ld+json">
-{"name":null,"description":"Welcome","author":null,"@type":"WebPage","url":"http://localhost:4000/blogs/testone.html","publisher":null,"image":null,"headline":"www.nextbeginning.com","dateModified":null,"datePublished":null,"sameAs":null,"mainEntityOfPage":null,"@context":"http://schema.org"}</script>
+{"name":null,"description":"Are you mushroom ?","author":null,"@type":"WebPage","url":"http://localhost:4000/source/blogs/testone.html","publisher":null,"image":null,"headline":"iOS(OC)面试题目整理 – HonBoom","dateModified":null,"datePublished":null,"sameAs":null,"mainEntityOfPage":null,"@context":"http://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
   </head>
@@ -32,9 +32,9 @@
     <header>
       <div class="inner">
         <a href="http://localhost:4000/">
-          <h1>www.nextbeginning.com</h1>
+          <h1>NextBeginning</h1>
         </a>
-        <h2>Welcome</h2>
+        <h2>Are you mushroom ?</h2>
         
           <a href="http://github.com/BruceFight/BruceFight.github.io" class="button"><small>View project on</small> GitHub</a>
         
@@ -45,98 +45,94 @@
     <div id="content-wrapper">
       <div class="inner clearfix">
         <section id="main-content">
-          <p align="center">
-❤️完整版本
-</p>
+          <h1 id="iosoc面试题目整理--honboom">iOS(OC)面试题目整理 – HonBoom</h1>
 
 <h2 id="一自动释放池的内部原理">一,自动释放池的内部原理</h2>
 <div class="highlighter-rouge">
-<pre class="highlight"><code>❤️答: autorelease实际上只是把对release的调用延迟了,对于每一个autorelease,系统只是把该 Object放入了当前的autorelease pool中,当该pool被释放时,该pool中的所有Object会被调用release。
+<pre class="highlight"><code>答: autorelease实际上只是把对release的调用延迟了,对于每一个autorelease,系统只是把该 Object放入了当前的autorelease pool中,当该pool被释放时,该pool中的所有Object会被调用release。
 </code></pre>
 </div>
 
 <h2 id="二int-a--5int-b--10要求在不不设定第三变量的情况下交换两个变量的值">二,int a = 5,int b = 10,(要求在不不设定第三变量的情况下交换两个变量的值)</h2>
 <div class="highlighter-rouge">
-<pre class="highlight"><code>❤️答:a = b - a
-	b = b - a
-	a = b + a
+<pre class="highlight"><code>答: a = b - a
+    b = b - a
+    a = b + a
 </code></pre>
 </div>
 
 <h2 id="三xcode中的目录结构是怎么分组的">三,Xcode中的目录结构是怎么分组的?</h2>
 <div class="highlighter-rouge">
-<pre class="highlight"><code>❤️答:一级目录按模块分,二级目录按模块内的功能分为Model,View,Controller;工具类可单独分为一个category目录
+<pre class="highlight"><code>答:一级目录按模块分,二级目录按模块内的功能分为Model,View,Controller;工具类可单独分为一个category目录
 </code></pre>
 </div>
 
 <h2 id="四什么时候用delegate什么时候用notification">四,什么时候用delegate,什么时候用Notification?</h2>
 <div class="highlighter-rouge">
-<pre class="highlight"><code>❤️答:delegate针对one-to-one的关系,并且receiver可以返回值给sender;
+<pre class="highlight"><code>答:delegate针对one-to-one的关系,并且receiver可以返回值给sender;
 	notification针对one-to-one/many/none,receiver无法返回值给sender.所以,delegate用于sender希望接收到receiver的某个功能反馈值,notification用于通知多个object某个事件.
 </code></pre>
 </div>
 
 <h2 id="五什么是kvc和kvo">五,什么是KVC和KVO?</h2>
 <div class="highlighter-rouge">
-<pre class="highlight"><code>❤️答:KVC(key-Value-Coding:键值编码)内部的实现:一个对象在调用setValue的时候,(1)首先根据方法名找到运行方法的时候所需要的环境参数.(2)他会从自己isa指针结合环境参数,找到具体的方法实现的接口.(3)再直接查找得来的具体是方法实现.
-KVO(key-Value_Observing:键值观察者):当观察者为一个对象的属性进行了注册,被观察对象的isa指针被修改的时候,isa指针就会指向一个中间类,而不是真实的类.所以isa指针其实不需要指向实例对象真实的类.所以我们的程序最好不要依赖于isa指针.在调用类的方法的时候,最好明确对象实例的类名. ￼ ￼
+<pre class="highlight"><code>答:KVC(key-Value-Coding:键值编码)内部的实现:一个对象在调用setValue的时候,(1)首先根据方法名找到运行方法的时候所需要的环境参数.(2)他会从自己isa指针结合环境参数,找到具体的方法实现的接口.(3)再直接查找得来的具体是方法实现.
+KVO(key-Value_Observing:键值观察者):当观察者为一个对象的属性进行了注册,被观察对象的isa指针被修改的时候,isa指针就会指向一个中间类,而不是真实的类.所以isa指针其实不需要指向实例对象真实的类.所以我们的程序最好不要依赖于isa指针.在调用类的方法的时候,最好明确对象实例的类名.
 </code></pre>
 </div>
 
 <h2 id="六请简述堆和栈的区别">六,请简述堆和栈的区别.</h2>
 <div class="highlighter-rouge">
-<pre class="highlight"><code>❤️答:&lt;1&gt;从管理方式来讲:对于栈来说,是由编译器自动管理,无需手动控制;对于堆来说,释放工作由程序员来控制,容易产生内存泄露(memory leak).&lt;2&gt;从申请大小方面讲:栈空间比较小;堆空间比较大.&lt;3&gt;从数据存储方面讲:栈空间一般存放基本类型,对象的地址;堆一般存放对象本身,block的copy等 ￼
+<pre class="highlight"><code>答:&lt;1&gt;从管理方式来讲:对于栈来说,是由编译器自动管理,无需手动控制;对于堆来说,释放工作由程序员来控制,容易产生内存泄露(memory leak).&lt;2&gt;从申请大小方面讲:栈空间比较小;堆空间比较大.&lt;3&gt;从数据存储方面讲:栈空间一般存放基本类型,对象的地址;堆一般存放对象本身,block的copy
 </code></pre>
 </div>
 
 <h2 id="七简述arc的原理">七,简述ARC的原理</h2>
 <div class="highlighter-rouge">
-<pre class="highlight"><code>❤️答:通过编译器在编译的时候,插入类似内存管理的代码来帮助开发者管理内存.
+<pre class="highlight"><code>答:通过编译器在编译的时候,插入类似内存管理的代码来帮助开发者管理内存.
 </code></pre>
 </div>
 
 <h2 id="八深复制和浅复制的区别">八,深复制和浅复制的区别.</h2>
 <div class="highlighter-rouge">
-<pre class="highlight"><code>❤️答:深复制是对内容进行拷贝;浅复制是对指针进行拷贝.
+<pre class="highlight"><code>答:深复制是对内容进行拷贝;浅复制是对指针进行拷贝.
 </code></pre>
 </div>
 
 <h2 id="九分类category和类扩展extension的区别">九,分类(category)和类扩展(extension)的区别.</h2>
 <div class="highlighter-rouge">
-<pre class="highlight"><code>❤️答:分类有名字,类扩展没有名字,是一种特殊的分类;
-分类只能扩展方法(属性只能是声明,并没有真正实现),类扩展可以扩展属性,成员变量和方法. ￼
+<pre class="highlight"><code>答:分类有名字,类扩展没有名字,是一种特殊的分类;
+分类只能扩展方法(属性只能是声明,并没有真正实现),类扩展可以扩展属性,成员变量和方法.
 </code></pre>
 </div>
 
 <h2 id="十oc有私有方法吗私有变量呢">十,OC有私有方法吗?私有变量呢?</h2>
 <div class="highlighter-rouge">
-<pre class="highlight"><code>❤️答:1&gt;OC没有类似@private 的修饰词来修饰方法,只要写在.h中,就是公共方法
+<pre class="highlight"><code>答:1&gt;OC没有类似@private 的修饰词来修饰方法,只要写在.h中,就是公共方法
 2&gt;可以直接写在.m文件中(比如类扩展)声明和实现方法,对编译器来说是私有的.
 </code></pre>
 </div>
 
 <h2 id="十一nsarray--和--nsset有何区别">十一,NSArray  和  NSSet有何区别</h2>
 <div class="highlighter-rouge">
-<pre class="highlight"><code>❤️答:NSArray : 内部数据结构是数组(有顺序的);NSSet : 内部数据结构是链表(无顺序的)
+<pre class="highlight"><code>答:NSArray : 内部数据结构是数组(有顺序的);NSSet : 内部数据结构是链表(无顺序的)
 </code></pre>
 </div>
 
-<h2 id="十二import-和-include的区别是">十二,#import 和 #include的区别是?</h2>
+<h2 id="十二import-和-include的区别是">十二,#import 和 #include的区别是\?</h2>
 <div class="highlighter-rouge">
-<pre class="highlight"><code>❤️答:* #import与#include的类似，都是把其后面的文件拷贝到该指令所在的地方
+<pre class="highlight"><code>答:* #import与#include的类似，都是把其后面的文件拷贝到该指令所在的地方
 * #import可以自动防止重复导入
 * #import &lt;&gt; 用于包含系统文件
 * #import用于包含本项目中的文件
-* #import , 告诉编译器找到并处理名为Foundation.h文件,这是一个系统文件,#import表示将该文件的信息导入到程序中。
+* #import , 告诉编译器找到并处理名为Foundation.h文件,这是一个系统文件,#import表示将该文件的信息导入到程序中
 </code></pre>
 </div>
 
 <h2 id="十三afn-和-sdwebimage-底层实现">十三,AFN 和 SDWebImage 底层实现</h2>
 <div class="highlighter-rouge">
-<pre class="highlight"><code>❤️答:
-AFNetWorking原理:
-￼
-
+<pre class="highlight"><code>答:
+AFNetWorking原理: ?
 SDWebimage底层:SDWebImage中为UIImageView提供了一个分类UIImageView+WebCache.h,这个分类中有一个最常用的接口sd_setImageWithURL:placeholderImage:,会在真实图片出现前先显示占位图片,当真实图片加载出来后会替换占位图片
     ※加载图片的过程大致如下:
     &lt;1&gt;首先会在SDWebImageCache中寻找图片是否有对应的缓存,它会以url作为数据的索引先在内存中寻找是否有对应的缓存
@@ -149,30 +145,27 @@ SDWebimage底层:SDWebImage中为UIImageView提供了一个分类UIImageView+Web
 
 <h2 id="十四uiview和calayer的关系">十四,UIView和CALayer的关系</h2>
 <div class="highlighter-rouge">
-<pre class="highlight"><code>❤️答;※UIView显示在屏幕上归功于CALayer,通过调用drawRect方法来渲染自身的内容,调节CALayer属性可以调整UIView的外观,UIView继承自UIResponder,比起CALayer可以响应用户数事件,Xcode6之后可以方便的通过视图调试功能查看图层之间的关系.※UIView是iOS系统中界面元素的基础,所有的界面元素都继承自它.它内部是由Core Animation来实现的,它真正的绘图的部分,是由一个叫CALayer(Core Animation Layer)的类来管理.UIView本身,更像是一个CALayer的管理器,访问它的跟绘图和坐标有关的属性,如frame,bounds等,实际上内部都是访问它所在的CALayer属性.※UIVIew有个Layer属性,可以返回它的主CALayer实例,UIView有一个LayerClass方法,返回主layer所使用的类,UIVIew的子类,可以通过重载这个方法,来让UIView使用不同的CALayer来显示,如
-￼
+<pre class="highlight"><code>答;
+※UIView显示在屏幕上归功于CALayer,通过调用drawRect方法来渲染自身的内容,调节CALayer属性可以调整UIView的外观,UIView继承自UIResponder,比起CALayer可以响应用户数事件,Xcode6之后可以方便的通过视图调试功能查看图层之间的关系.※UIView是iOS系统中界面元素的基础,所有的界面元素都继承自它.它内部是由Core Animation来实现的,它真正的绘图的部分,是由一个叫CALayer(Core Animation Layer)的类来管理.UIView本身,更像是一个CALayer的管理器,访问它的跟绘图和坐标有关的属性,如frame,bounds等,实际上内部都是访问它所在的CALayer属性.
+※UIVIew有个Layer属性,可以返回它的主CALayer实例,UIView有一个LayerClass方法,返回主layer所使用的类,UIVIew的子类,可以通过重载这个方法,来让UIView使用不同的CALayer来显示,如
 ※UIVIew的CALayer类似UIVIew的子View树形结构,也可以向它的Layer上添加子layer,来完成某些特殊的显示.例如下面的代码会在目标View上敷上一层黑色的透明薄膜.
-￼
 ※补充部分，这部分有深度了，大致了解一下吧，UIView的layer树形在系统内部被系统维护着三份copy
-* 逻辑树，就是代码里可以操纵的，例如更改layer的属性等等就在这一份
-* 动画树，这是一个中间层，系统正是在这一层上更改属性，进行各种渲染操作
-* 显示树，这棵树的内容是当前正被显示在屏幕上的内容
-* 这三棵树的逻辑结构都是一样的，区别只有各自的属性
+    * 逻辑树，就是代码里可以操纵的，例如更改layer的属性等等就在这一份
+    * 动画树，这是一个中间层，系统正是在这一层上更改属性，进行各种渲染操作
+    * 显示树，这棵树的内容是当前正被显示在屏幕上的内容
+    * 这三棵树的逻辑结构都是一样的，区别只有各自的属性
 </code></pre>
 </div>
 
 <h2 id="十五uiviewcontroller整个生命周期自动调用的五个方法是什么先后顺序">十五,UIViewController整个生命周期自动调用的五个方法是什么?先后顺序?</h2>
 <div class="highlighter-rouge">
-<pre class="highlight"><code>❤️答:其实问的就是View的生命周期:
-￼
-￼
-￼
+<pre class="highlight"><code>答:其实问的就是View的生命周期:
 </code></pre>
 </div>
 
 <h2 id="十六const-的使用">十六,const 的使用?</h2>
 <div class="highlighter-rouge">
-<pre class="highlight"><code>❤️答:如果const写在指针类型的左边, 那么意味着指向的内存空间中的值不能改变, 但是指针的指向可以改变
+<pre class="highlight"><code>答:如果const写在指针类型的左边, 那么意味着指向的内存空间中的值不能改变, 但是指针的指向可以改变
 如果const写在指针的数据类型和*号之间, 那么意味着指向的内存空间中的值不能改变, 但是指针的指向可以改变
 如果const写在指针的右边(数据类型 * const), 那么意味着指针的指向不可以改变, 但是指针指向的存储空间中的值可以改变
 
@@ -184,7 +177,7 @@ SDWebimage底层:SDWebImage中为UIImageView提供了一个分类UIImageView+Web
 
 <h2 id="十七什么是block请简述">十七,什么是block,请简述.</h2>
 <div class="highlighter-rouge">
-<pre class="highlight"><code>❤️答:Block是iOS中一种比较特殊的数据类型,用来保存某一段代码
+<pre class="highlight"><code>答:Block是iOS中一种比较特殊的数据类型,用来保存某一段代码
 </code></pre>
 </div>
 
