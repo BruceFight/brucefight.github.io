@@ -1,11 +1,9 @@
 title: NextBeginning
-description: Are you mushroom ?
+description: Description
 google_analytics: 
 show_downloads: false
 twitter_username: jekyllrb
 github_username:  jekyll
 theme: jekyll-theme-architect
-
 plugins:
   - jekyll-mentions
-
