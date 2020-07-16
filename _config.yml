@@ -11,7 +11,7 @@ description: | # 头像背后的信息（html格式），<br/>代表换行 http:
     <i class="fab fa-github"></i>
   </a>
   <iframe
-    src="https://music.163.com/outchain/player?type=0&id=155059595&auto=0&height=32"
+    src="https://m701.music.126.net/20200716180903/9ac13716c8ce81fda19e3036d0b71e3e/jdyyaac/035e/525f/0e5d/4434ec19e2e53ae10a4e97eeff15ff82.m4a"
     width=100%
     height=52
     frameborder="no"
@@ -51,12 +51,12 @@ defaults: # 将所有配置选项使用<https://jekyllrb.com/docs/configuration/
             - | # 网站小图标，可换成你自己的图片，改href中的部分即可
               <link
                 rel="apple-touch-icon-precomposed"
-                href="https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=3061251839,3725134231&fm=26&gp=0.jpg"
+                href="https://avatars0.githubusercontent.com/u/15614200?s=400&u=357d0ce8e41c1a76eb0b366b6d0c41849db62667&v=4"
               />
               <link
                 rel="shortcut
                 icon"
-                href="https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=3061251839,3725134231&fm=26&gp=0.jpg"
+                href="https://avatars0.githubusercontent.com/u/15614200?s=400&u=357d0ce8e41c1a76eb0b366b6d0c41849db62667&v=4"
               />
             - | # 来自lanyon的页面样式，不要改
               <link
@@ -151,11 +151,11 @@ defaults: # 将所有配置选项使用<https://jekyllrb.com/docs/configuration/
                   background-position: 0% 0%;
                   background-repeat: no-repeat;
                   background-attachment: fixed;
-                  background-image: url(https://hbimg.huabanimg.com/0418bc8ce82a32789b09ff34d797e60aad4ece2dc3f9-BszrZQ_fw236/format/webp);
+                  background-image: url(/assets/image/backGround.jpg);
                 }
                 @media (min-aspect-ratio: 2400/1850) {
                   .wrap {
-                    background-image: url(https://hbimg.huabanimg.com/0418bc8ce82a32789b09ff34d797e60aad4ece2dc3f9-BszrZQ_fw236/format/webp);
+                    background-image: url(/assets/image/backGround.jpg);
                   }
                 }
                 .sidebar-overlay #sidebar-checkbox:checked ~ .wrap {
@@ -223,8 +223,8 @@ defaults: # 将所有配置选项使用<https://jekyllrb.com/docs/configuration/
             nav: # 导航部分的内容，你也可以自己增加文字、图标（来自fontawesome）和对应的链接
               - title: '<i class="fas fa-home fa-fw"></i> 首页'
                 href: /
-              - title: '<i class="fas fa-comments fa-fw"></i> 留言'
-                href: /comments/
+              # - title: '<i class="fas fa-comments fa-fw"></i> 留言'
+              #   href: /comments/
               - title: '<i class="fas fa-tags fa-fw"></i> 标签'
                 href: /tags/
               - title: '<i class="fas fa-archive fa-fw"></i> 归档'
@@ -530,26 +530,26 @@ defaults: # 将所有配置选项使用<https://jekyllrb.com/docs/configuration/
                   }
                 }
               </style>
-        comments: # 留言页
-          append:
-            | # 配置评论区，appId和appKey需要换成你自己的，见<https://valine.js.org/configuration.html>，推荐再整一个评论管理系统<https://github.com/DesertsP/Valine-Admin>
-            <div class="v">
-              <i class="fas fa-spinner fa-pulse"></i>
-            </div>
-            <script
-              src='https://cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js'
-              async="async"
-              onload='
-                new Valine({
-                  "el": document.getElementsByClassName("v")[0],
-                  "appId": "9hABRddSuEkTgqLrt1VSK5B1-gzGzoHsz",
-                  "appKey": "NJ7RwmgrxsF7KDzlqU7YewlL",
-                  "placeholder": "在这里评论吧！填写邮箱可以获得 Gravatar 头像和回复通知哦",
-                  "requiredFields": ["nick","mail"],
-                  "visitor": true,
-                  "recordIP": true
-                })'
-            ></script>
+        # comments: # 留言页
+        #   append:
+        #     | # 配置评论区，appId和appKey需要换成你自己的，见<https://valine.js.org/configuration.html>，推荐再整一个评论管理系统<https://github.com/DesertsP/Valine-Admin>
+        #     <div class="v">
+        #       <i class="fas fa-spinner fa-pulse"></i>
+        #     </div>
+        #     <script
+        #       src='https://cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js'
+        #       async="async"
+        #       onload='
+        #         new Valine({
+        #           "el": document.getElementsByClassName("v")[0],
+        #           "appId": "9hABRddSuEkTgqLrt1VSK5B1-gzGzoHsz",
+        #           "appKey": "NJ7RwmgrxsF7KDzlqU7YewlL",
+        #           "placeholder": "在这里评论吧！填写邮箱可以获得 Gravatar 头像和回复通知哦",
+        #           "requiredFields": ["nick","mail"],
+        #           "visitor": true,
+        #           "recordIP": true
+        #         })'
+        #     ></script>
         post:
           date: # 显示博文时间
             enable: true
@@ -673,7 +673,7 @@ defaults: # 将所有配置选项使用<https://jekyllrb.com/docs/configuration/
                 height: '100%',
                 hash: true,
                 mouseWheel: true,
-                navigationMode: 'linear',
+                navigationMode: 'default',
                 plugins: [ RevealMarkdown ]
               });
             "></script>

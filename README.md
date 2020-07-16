@@ -30,7 +30,7 @@ School of Data and Computer Science, Shandong First Medical University , Shandon
 
 <!-- 我的一些项目成果 []()尝试  -->
 
-<!-- slide vertical=true -->
+<!-- slide -->
 
 ## 我的一些技能
 
