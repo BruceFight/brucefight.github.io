@@ -11,7 +11,7 @@ description: | # 头像背后的信息（html格式），<br/>代表换行 http:
     <i class="fab fa-github"></i>
   </a>
   <iframe
-    src="https://m701.music.126.net/20200716180903/9ac13716c8ce81fda19e3036d0b71e3e/jdyyaac/035e/525f/0e5d/4434ec19e2e53ae10a4e97eeff15ff82.m4a"
+    src="/assets/music/Faded.mp3"
     width=100%
     height=52
     frameborder="no"
