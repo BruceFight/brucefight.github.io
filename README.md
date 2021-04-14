@@ -1,10 +1,10 @@
-# HonBoom
+# Boom
 
-欢迎访问我的个人主页！下面向你介绍一下我自己吧~
+欢迎访问我的个人主页 ~
 
 <!-- slide -->
 
-## 我的一些联系方式
+## 个人联系方式
 
 - Address: **BaiYun District - Guangzhou, China**
 - Phone: **+86 18218462815**
@@ -19,39 +19,41 @@
 
 <!-- slide -->
 
-## 我的一些教育情况
+## 个人职业经历
 
 <!-- slide vertical=true -->
 
-School of Data and Computer Science, Shandong First Medical University , Shandong
+- 广州邢帅教育科技有限公司 / 创新产品部 2016.3 - 2017.1
+  - 负责<<汪汪配>>的iOS开发工作.
 
-- Bachelor of Management, Sept. 2011 - Jul. 2015(expected)
-  - Information management and system
+- 广东世纪晓教育科技有限公司 / 互联网中心 2017.3 - 2020.9
+ - 负责<<晓教育>>、 <<晓培优>>的iOS开发工作.
+
+- 珠海金山办公软件有限公司 / 三端产品 2020.9 - 至今
+ - 负责<<WPS>>的iOS开发工作.
 
 <!-- 我的一些项目成果 []()尝试  -->
 
 <!-- slide -->
 
-## 我的一些技能
+## 个人技能
 
 <!-- slide vertical=true -->
 
 - **iOS Development**, Familiar
-  - **OC/Swift**, Familiar
-  - **持久化**, Familiar&Learning
-  - **流程**, Learning
+  - **Object-C/Swift**, Familiar
+  - **开发流程、端点配合**, Familiar
+- **C++**, Learning
 - **Python**, Learning
 
 <!-- slide vertical=true -->
 
 - **Markdown**, Familiar
-- **LaTex**, Familiar
-- **Linux**, Familiar&Learning
 - **Git**, Familiar
-- **VSCode**, Familiar
+- **VSCode**, Learning
 
 <!-- slide -->
-
+<!-- 
 ## 我的一些领导力
 
-TBD <To Be Discussed / Determined > 待讨论
+TBD <To Be Discussed / Determined > 待讨论 -->
