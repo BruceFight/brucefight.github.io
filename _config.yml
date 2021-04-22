@@ -1,24 +1,12 @@
 title: HonBoom # 站点标题
 description: | # 头像背后的信息（html格式），<br/>代表换行 http://www.fontawesome.com.cn/  http://www.fontawesome.com.cn/cheatsheet/
-  iOS高级开发工程师<br/>
-  永远是学生<br/>
-  篮球与游戏<br/>
-  半半<br/>
+  iOS开发工程师<br/>
   <a href="mailto:jhbcoolcoder@gmail.com">
     <i class="fas fa-envelope"></i>
   </a>
   <a href="https://github.com/BruceFight">
     <i class="fab fa-github"></i>
   </a>
-  <iframe
-    src="/assets/music/Faded.mp3"
-    width=100%
-    height=52
-    frameborder="no"
-    border="0"
-    marginwidth="0"
-    marginheight="0"
-  ></iframe>
 url: http://www.nextbeginning.com # 你的域名，例如 https://wu-kan.github.io
 baseurl: "" # 假如你的博客是建在某个目录下的，请在这里加上目录名，并且下面配置的所有链接里的`/assets`前也要加，即`/your_baseurl/assets`。这一项结尾不要有'/'。
 
@@ -29,8 +17,8 @@ defaults: # 将所有配置选项使用<https://jekyllrb.com/docs/configuration/
       jekyll-theme-WuK: # 我的主题的自定义样式都在这个命名空间
         default:
           body:
-            theme-base: theme-base-08 # 可选的主题色包括08~0f，见 <https://github.com/poole/lanyon>
-            layout-reverse: true # 开启后sidebar在右边，反之左边
+            theme-base: theme-base-0d # 可选的主题色包括08~0f，见 <https://github.com/poole/lanyon>
+            layout-reverse: false # 开启后sidebar在右边，反之左边
             sidebar-overlay: true # 开启后正文不随sidebar移动而移动
           append_to_head: # 通过内嵌html的方式引入并定制插件，删改前确定知道自己在做什么。定制插件的方式可以参考这篇文章 <https://wu-kan.cn/_posts/2019-01-18-基于Jekyll搭建个人博客/>
             - | #一些页面优化标签，看不懂可跳过
@@ -139,7 +127,7 @@ defaults: # 将所有配置选项使用<https://jekyllrb.com/docs/configuration/
                 src='https://zz.bdstatic.com/linksubmit/push.js'
                 async="async"
               ></script>
-            - | # 网站背景图片，分竖屏、宽屏；改链接即可，不想用可以把这一项全删掉；要换壁纸图片的话可把url内的部分换成你自己的，比如你放在 /assets/image/background.jpg，那就改成 url(/assets/image/background.jpg)
+            - | # 网站背景图片，分竖屏、宽屏；改链接即可，不想用可以把这一项全删掉；要换壁纸图片的话可把url内的部分换成你自己的，比如你放在 /assets/image/background.jpeg，那就改成 url(/assets/image/background.jpeg)
               <style>
                 .wrap {
                   transition-property: width,background-size,transform;
@@ -151,11 +139,11 @@ defaults: # 将所有配置选项使用<https://jekyllrb.com/docs/configuration/
                   background-position: 0% 0%;
                   background-repeat: no-repeat;
                   background-attachment: fixed;
-                  background-image: url(/assets/image/backGround.jpg);
+                  background-image: url(/assets/image/backGround.jpeg);
                 }
                 @media (min-aspect-ratio: 2400/1850) {
                   .wrap {
-                    background-image: url(/assets/image/backGround.jpg);
+                    background-image: url(/assets/image/backGround.jpeg);
                   }
                 }
                 .sidebar-overlay #sidebar-checkbox:checked ~ .wrap {
@@ -219,8 +207,11 @@ defaults: # 将所有配置选项使用<https://jekyllrb.com/docs/configuration/
             disable: false # 是否不显示sidebar
             avatar: # 侧边栏显示的头像
               enable: true
-              img: https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=3061251839,3725134231&fm=26&gp=0.jpg # 头像的地址
-            nav: # 导航部分的内容，你也可以自己增加文字、图标（来自fontawesome）和对应的链接
+              img: https://avatars0.githubusercontent.com/u/15614200?s=400&u=357d0ce8e41c1a76eb0b366b6d0c41849db62667&v=4 # 头像的地址
+            nav: # 导航部分的内容，你也可以自己增加文字、图标（来自fontawesome）和对应的链
+              - title: '<audio controls loop>
+                  <source src="/assets/music/Faded.mp3"  type="audio/mpeg">
+                </audio>'
               - title: '<i class="fas fa-home fa-fw"></i> 首页'
                 href: /
               - title: '<i class="fas fa-tags fa-fw"></i> 标签'
@@ -263,15 +254,15 @@ defaults: # 将所有配置选项使用<https://jekyllrb.com/docs/configuration/
                       fuzzy: true
                     })'
                 ></script>
-            jekyll-toc: # 侧边栏的目录插件，https://github.com/allejo/jekyll-toc
-              enable: true
-              prepend: | # 目录过长时自动折叠
-                <style>
-                  #toc {
-                    overflow: auto auto;
-                    max-height: 66.6vh;
-                  }
-                </style>
+            # jekyll-toc: # 侧边栏的目录插件，https://github.com/allejo/jekyll-toc
+            #   enable: true
+            #   prepend: | # 目录过长时自动折叠
+            #     <style>
+            #       #toc {
+            #         overflow: auto auto;
+            #         max-height: 66.6vh;
+            #       }
+            #     </style>
             append_to_sidebar:
               #- <script defer="defer" src="https://cdn.jsdelivr.net/gh/poole/lanyon@v1.1.0/public/js/script.min.js"></script> # 点击空白处而非按钮从而关闭侧边栏的插件，可选
               - | #修复点击侧边栏按钮回到顶部的问题
@@ -357,7 +348,7 @@ defaults: # 将所有配置选项使用<https://jekyllrb.com/docs/configuration/
                     document.getElementById("run_time_hour"),
                     document.getElementById("run_time_minute"),
                     document.getElementById("run_time_second"),
-                    "01/17/2016 12:00:00")// 这是我第一篇CSDN博客的时间
+                    "01/17/2016 12:00:00")
                   </script>
                 </div>
               - | # 卜算子页面统计，看不懂可不改

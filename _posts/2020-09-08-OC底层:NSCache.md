@@ -1,4 +1,8 @@
-NSCache
+---
+title: 2020-09-08-OC底层:NSCache
+tags: iOS-OC
+---
+
 NSCache使用很方便，提供了类似可变字典的实现方式，但它比可变字典更适用于实现缓存。
 
 最重要的原因是NSCache是线程安全的，使用NSMutableDictionary自定义实现缓存的时候需要考虑加锁和释放锁，NSCache已经帮我们做好了这一步。

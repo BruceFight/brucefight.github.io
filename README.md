@@ -4,7 +4,7 @@
 
 <!-- slide -->
 
-## 个人联系方式
+# 个人联系方式
 
 - Address: **BaiYun District - Guangzhou, China**
 - Phone: **+86 18218462815**
@@ -19,7 +19,7 @@
 
 <!-- slide -->
 
-## 个人职业经历
+# 个人职业经历
 
 <!-- slide vertical=true -->
 
@@ -36,7 +36,7 @@
 
 <!-- slide -->
 
-## 个人技能
+# 个人技能
 
 <!-- slide vertical=true -->
 
