@@ -53,7 +53,4 @@
 - **VSCode**, Learning
 
 <!-- slide -->
-<!-- 
-## 我的一些领导力
-
-TBD <To Be Discussed / Determined > 待讨论 -->
+# 南无阿弥陀佛! 
