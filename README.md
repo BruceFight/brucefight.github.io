@@ -1,4 +1,4 @@
-# Boom
+# BenCool
 
 欢迎访问我的个人主页 ~
 
@@ -7,14 +7,13 @@
 # 个人联系方式
 
 - Address: **BaiYun District - Guangzhou, China**
-- Phone: **+86 18218462815**
-- Site: **<http://www.nextbeginning.com>**
+- Phone: **+86 17676468051**
+- Site: **<http://www.9527.我爱你>**
 
 <!-- slide vertical=true -->
 
 - E-mail:
-  - **[jhbcoolcoder@gmail.com](mailto:jhbcoolcoder@gmail.com)**
-- WeChat: **brucej2014**
+  - **[jhbcoolcoder@gmail.com](mailto:1050848821@qq.com)**
 - QQ: **1050848821**
 
 <!-- slide -->
