@@ -1,12 +1,19 @@
 title: HonBoom # 站点标题
 description: | # 头像背后的信息（html格式），<br/>代表换行 http://www.fontawesome.com.cn/  http://www.fontawesome.com.cn/cheatsheet/
-  iOS开发工程师<br/>
-  <a href="mailto:jhbcoolcoder@gmail.com">
-    <i class="fas fa-envelope"></i>
-  </a>
-  <a href="https://github.com/BruceFight">
-    <i class="fab fa-github"></i>
-  </a>
+  <div>
+    <p style="text-align:center">
+      <B style="text-align:center">
+        菩提本无树，明镜亦非台。
+        本来无一物，何处惹尘埃！
+      </B>
+    </p>
+    <a href="mailto:jhbcoolcoder@gmail.com">
+      <i class="fas fa-envelope"></i>
+    </a>
+    <a href="https://github.com/BruceFight">
+      <i class="fab fa-github"></i>
+    </a>
+  </div>
 url: http://www.9527.xn--6qq986b3xl # 你的域名，例如 https://wu-kan.github.io
 baseurl: "" # 假如你的博客是建在某个目录下的，请在这里加上目录名，并且下面配置的所有链接里的`/assets`前也要加，即`/your_baseurl/assets`。这一项结尾不要有'/'。
 
@@ -39,12 +46,12 @@ defaults: # 将所有配置选项使用<https://jekyllrb.com/docs/configuration/
             - | # 网站小图标，可换成你自己的图片，改href中的部分即可
               <link
                 rel="apple-touch-icon-precomposed"
-                href="https://avatars0.githubusercontent.com/u/15614200?s=400&u=357d0ce8e41c1a76eb0b366b6d0c41849db62667&v=4"
+                href="https://avatars.githubusercontent.com/u/15614200?s=96&v=4"
               />
               <link
                 rel="shortcut
                 icon"
-                href="https://avatars0.githubusercontent.com/u/15614200?s=400&u=357d0ce8e41c1a76eb0b366b6d0c41849db62667&v=4"
+                href="https://avatars.githubusercontent.com/u/15614200?s=96&v=4"
               />
             - | # 来自lanyon的页面样式，不要改
               <link
@@ -139,11 +146,11 @@ defaults: # 将所有配置选项使用<https://jekyllrb.com/docs/configuration/
                   background-position: 0% 0%;
                   background-repeat: no-repeat;
                   background-attachment: fixed;
-                  background-image: url(/assets/image/backGround.jpeg);
+                <!--  background-image: url(/assets/image/backGround.jpeg); -->
                 }
                 @media (min-aspect-ratio: 2400/1850) {
                   .wrap {
-                    background-image: url(/assets/image/backGround.jpeg);
+                  <!-- background-image: url(/assets/image/backGround.jpeg); -->
                   }
                 }
                 .sidebar-overlay #sidebar-checkbox:checked ~ .wrap {
@@ -209,17 +216,19 @@ defaults: # 将所有配置选项使用<https://jekyllrb.com/docs/configuration/
               enable: true
               img: https://avatars0.githubusercontent.com/u/15614200?s=400&u=357d0ce8e41c1a76eb0b366b6d0c41849db62667&v=4 # 头像的地址
             nav: # 导航部分的内容，你也可以自己增加文字、图标（来自fontawesome）和对应的链
-              - title: '<audio controls loop>
-                  <source src="/assets/music/Faded.mp3"  type="audio/mpeg">
+            #autoplay="autoplay" style="width:100%"
+              - title: '
+                <audio controls loop style="width:120%">
+                  <source src="https://ws.stream.qqmusic.qq.com/C400003VLsik0ztbIb.m4a?guid=8364016&vkey=2F7CF74F820C4799633A3E8B14AC9529D33403B5BBB28CEF05FC4D0B294E6831EC78C188AC53E505E32EF5B9CB1CC87DADFD88300DD96831&uin=626567678&fromtag=103032">
                 </audio>'
               - title: '<i class="fas fa-home fa-fw"></i> 首页'
                 href: /
-              - title: '<i class="fas fa-tags fa-fw"></i> 标签'
-                href: /tags/
+              #- title: '<i class="fas fa-tags fa-fw"></i> 标签'
+              #  href: /tags/
               - title: '<i class="fas fa-archive fa-fw"></i> 归档'
                 href: /archive/
             simple_jekyll_search: # 侧边栏的全站搜索
-              enable: true
+              enable: false
               full_text_search: false # 可能导致缓慢的搜索和加载
               append: | # 如果看不懂就不改
                 <style>
@@ -386,7 +395,7 @@ defaults: # 将所有配置选项使用<https://jekyllrb.com/docs/configuration/
               - | # Copyright声明
                 <div>
                   <i class="fas fa-copyright fa-fw"></i>
-                  2016-2020 HonBoom
+                  EST.2016 Boom
                 </div>
               # - | # 我的备案信息，请你的网站删掉这一项。互联网非法外之地！
               #   <div>
