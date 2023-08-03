@@ -385,13 +385,13 @@ defaults: # 将所有配置选项使用<https://jekyllrb.com/docs/configuration/
                     async='async'
                   ></script>
                 </div>
-              - | # 觉得我的主题好用的话，让更多的人知道它吧！
-                <div>
-                  <i class="fas fa-thumbs-up fa-fw"></i>
-                  <a href="https://jekyll-theme-WuK.wu-kan.cn">
-                    jekyll-theme-WuK
-                  </a>
-                </div>
+              #- |  觉得我的主题好用的话，让更多的人知道它吧！
+                # <div>
+                #   <i class="fas fa-thumbs-up fa-fw"></i>
+                #   <a href="https://jekyll-theme-WuK.wu-kan.cn">
+                #     jekyll-theme-WuK
+                #   </a>
+                # </div>
               - | # Copyright声明
                 <div>
                   <i class="fas fa-copyright fa-fw"></i>
@@ -549,7 +549,7 @@ defaults: # 将所有配置选项使用<https://jekyllrb.com/docs/configuration/
 
         tags:
           pie_chart: # 显示一个标签的饼状统计图，需要引入 mermaid
-            enable: true
+            enable: false
           count: true # 统计每个标签下文章的数量
           toc: # 在正文里显示一个标签的目录
             enable: false
@@ -557,9 +557,9 @@ defaults: # 将所有配置选项使用<https://jekyllrb.com/docs/configuration/
           group_by: "%b %Y" # 见<https://liquid.bootcss.com/filters/date/>
           posts_count:
             enable: true # 博文数量统计
-            append: 篇博文。长路漫漫！ # 提示语
+            append: 篇博文。 # 提示语
           pie_chart: # 显示一个标签的饼状统计图，需要引入 mermaid
-            enable: true
+            enable: false
           year_count: true
           toc: # 在正文里显示一个归档的目录
             enable: false
