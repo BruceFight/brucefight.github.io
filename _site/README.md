@@ -5,3 +5,4 @@
 - Company: **KingSoft**
 - Site: **<http://www.9527.我爱你>**
 - E-mail: **[jhbcoolcoder@gmail.com](mailto:jhbcoolcoder@gmail.com)**
+- ![DSC04543图片](./assets/image/DSC04543.png)
