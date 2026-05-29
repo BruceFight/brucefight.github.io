@@ -448,6 +448,21 @@ html, body {
   50% { box-shadow: 0 0 0 12px rgba(239, 68, 68, 0); }
 }
 
+/* 离线成员样式 */
+.marker-label.offline {
+  background: rgba(156, 163, 175, 0.8);
+  opacity: 0.7;
+}
+
+.marker-label.offline::after {
+  border-top-color: rgba(156, 163, 175, 0.8);
+}
+
+.marker-dot.offline {
+  background: #9ca3af;
+  opacity: 0.6;
+}
+
 /* 连接状态提示 */
 .connection-status {
   position: fixed;
