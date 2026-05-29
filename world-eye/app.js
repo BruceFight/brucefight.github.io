@@ -396,24 +396,7 @@ socket.on('alarm-received', (data) => {
   document.getElementById('alarm-sender-name').textContent = data.name;
   document.getElementById('alarm-overlay').classList.remove('hidden');
 
-  if (navigator.vibrate) {
-    navigator.vibrate([300, 100, 300, 100, 300, 100, 600]);
-  }
-
-  try {
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    [800, 600, 800, 600, 800].forEach((freq, i) => {
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      osc.frequency.value = freq;
-      osc.type = 'square';
-      gain.gain.value = 0.15;
-      osc.start(audioCtx.currentTime + i * 0.3);
-      osc.stop(audioCtx.currentTime + i * 0.3 + 0.2);
-    });
-  } catch (e) { /* audio not supported */ }
+  triggerAlarmFeedback();
 
   highlightAlarmMarker(data.memberId, data.name, data.lat, data.lng);
 });
@@ -462,6 +445,47 @@ document.getElementById('alarm-locate-btn').addEventListener('click', () => {
   }
   lastAlarmData = null;
 });
+
+function triggerAlarmFeedback() {
+  // Android: Vibration API — 长震动模式，持续约 5 秒
+  if (navigator.vibrate) {
+    navigator.vibrate([
+      500, 100, 500, 100, 500, 200,
+      800, 100, 800, 100, 800
+    ]);
+  }
+
+  // 警报音：更大音量、更长持续时间，iOS 上至少能听到声音
+  try {
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const freqs = [880, 440, 880, 440, 880, 440, 880, 440];
+    freqs.forEach((freq, i) => {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.frequency.value = freq;
+      osc.type = 'square';
+      gain.gain.setValueAtTime(0.3, audioCtx.currentTime + i * 0.25);
+      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + i * 0.25 + 0.2);
+      osc.start(audioCtx.currentTime + i * 0.25);
+      osc.stop(audioCtx.currentTime + i * 0.25 + 0.24);
+    });
+  } catch (e) { /* audio not supported */ }
+
+  // 持续震动：每秒重复一次，共 5 轮（确保用户注意到）
+  let vibrateCount = 0;
+  const vibrateInterval = setInterval(() => {
+    vibrateCount++;
+    if (vibrateCount >= 5) {
+      clearInterval(vibrateInterval);
+      return;
+    }
+    if (navigator.vibrate) {
+      navigator.vibrate([400, 100, 400]);
+    }
+  }, 1500);
+}
 
 function restoreAlarmMarker() {
   if (alarmMarkerTimer) {
