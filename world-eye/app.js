@@ -1,9 +1,13 @@
 // ========== 后端服务地址配置 ==========
-// 本地开发: 'http://localhost:3000'
-// 生产环境: 填入部署后的后端地址，如 'https://world-eye-xxxx.onrender.com'
 const BACKEND_URL = window.WORLD_EYE_BACKEND || 'https://world-eye.onrender.com';
 
-const socket = BACKEND_URL ? io(BACKEND_URL) : io();
+const socket = io(BACKEND_URL, {
+  transports: ['websocket', 'polling'],
+  reconnection: true,
+  reconnectionAttempts: Infinity,
+  reconnectionDelay: 1000,
+  timeout: 10000
+});
 
 let map;
 let myMarker;
@@ -11,6 +15,7 @@ let myLatLng = null;
 let hasJoined = false;
 let selectedType = 'individual';
 let memberMarkers = {};
+let myJoinData = null;
 
 const embassyData = {
   default: {
@@ -149,6 +154,10 @@ function addSelfMarker(lat, lng) {
 
 function addMemberMarker(member) {
   if (member.id === socket.id) return;
+  if (memberMarkers[member.id]) {
+    memberMarkers[member.id].setLatLng([member.lat, member.lng]);
+    return;
+  }
 
   const typeClass = member.type === 'team' ? 'team' : 'individual';
   const label = member.type === 'team'
@@ -290,14 +299,16 @@ document.getElementById('join-form').addEventListener('submit', (e) => {
     return;
   }
 
-  socket.emit('join-world', {
+  myJoinData = {
     name,
     type: selectedType,
     contact,
     memberCount: selectedType === 'team' ? parseInt(memberCount) : null,
     lat: myLatLng.lat,
     lng: myLatLng.lng
-  });
+  };
+
+  socket.emit('join-world', myJoinData);
 
   hasJoined = true;
   document.getElementById('join-modal').classList.add('hidden');
@@ -339,9 +350,13 @@ document.getElementById('join-form').addEventListener('submit', (e) => {
 
 // Socket 连接状态
 socket.on('connect', () => {
-  console.log('已连接到观界天眼服务');
-  const status = document.getElementById('connection-status');
-  if (status) status.classList.add('hidden');
+  console.log('已连接到观界天眼服务, id:', socket.id);
+  if (hasJoined && myJoinData) {
+    myJoinData.lat = myLatLng.lat;
+    myJoinData.lng = myLatLng.lng;
+    socket.emit('join-world', myJoinData);
+  }
+  socket.emit('request-sync');
 });
 
 socket.on('connect_error', (err) => {
@@ -352,8 +367,18 @@ socket.on('disconnect', (reason) => {
   console.warn('连接断开:', reason);
 });
 
+socket.on('join-confirmed', (data) => {
+  console.log('加入确认, 当前成员数:', data.totalMembers);
+  socket.emit('request-sync');
+});
+
 // Socket 数据事件
 socket.on('sync-members', (members) => {
+  Object.keys(memberMarkers).forEach(id => {
+    if (!members.find(m => m.id === id)) {
+      removeMemberMarker(id);
+    }
+  });
   members.forEach(member => {
     addMemberMarker(member);
   });
