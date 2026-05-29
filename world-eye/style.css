@@ -209,6 +209,26 @@ html, body {
   animation: pulse 2s infinite;
 }
 
+.toggle-view-btn {
+  background: none;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 2px 6px;
+  margin-left: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.2s;
+}
+
+.toggle-view-btn:hover {
+  background: #f3f4f6;
+}
+
+.toggle-view-btn.show-all {
+  background: #dbeafe;
+  border-color: #93c5fd;
+}
+
 @keyframes pulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.5; }

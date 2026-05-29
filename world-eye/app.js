@@ -57,6 +57,8 @@ let selectedType = 'individual';
 let memberMarkers = {};
 let myMemberId = null;
 let myJoinData = null;
+let showOnlyOnline = false;
+let lastMembersList = [];
 
 // ========== 本地缓存 ==========
 function saveProfile(profile) {
@@ -192,6 +194,10 @@ function addSelfMarker(lat, lng) {
 
 function renderMemberMarker(member) {
   if (member.memberId === myMemberId) return;
+  if (showOnlyOnline && !member.isOnline) {
+    removeMemberMarker(member.memberId);
+    return;
+  }
 
   const display = toDisplayCoord(member.lat, member.lng);
   const isOnline = member.isOnline;
@@ -218,11 +224,18 @@ function renderMemberMarker(member) {
   } else {
     const marker = L.marker([display.lat, display.lng], { icon }).addTo(map);
     const statusText = isOnline ? '🟢 在线' : '⚪ 离线';
+    const navUrl = /iPhone|iPad|iPod/i.test(navigator.userAgent)
+      ? `maps://maps.apple.com/?daddr=${member.lat},${member.lng}`
+      : `https://www.google.com/maps/dir/?api=1&destination=${member.lat},${member.lng}`;
     const popupContent = `
-      <div style="min-width:150px">
+      <div style="min-width:160px">
         <strong>${member.name}</strong> <small>${statusText}</small><br/>
         <span style="color:#666">${member.type === 'team' ? '团队' : '个人'}${member.memberCount ? ' · ' + member.memberCount + '人' : ''}</span><br/>
-        <a href="tel:${member.contact}" style="color:#2563eb">📞 ${member.contact}</a>
+        <a href="tel:${member.contact}" style="color:#2563eb;text-decoration:none">📞 ${member.contact}</a><br/>
+        <a href="${navUrl}" target="_blank" rel="noopener"
+           style="display:inline-block;margin-top:6px;padding:5px 12px;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border-radius:16px;text-decoration:none;font-size:13px;font-weight:500">
+          🧭 导航前往
+        </a>
       </div>
     `;
     marker.bindPopup(popupContent);
@@ -239,10 +252,25 @@ function removeMemberMarker(memberId) {
 
 function updateOnlineCount(members) {
   if (members) {
+    lastMembersList = members;
     const onlineCount = members.filter(m => m.isOnline).length;
     const totalCount = members.length;
-    document.getElementById('count-text').textContent = `${onlineCount} 在线 / ${totalCount} 成员`;
+    const label = showOnlyOnline ? `${onlineCount} 在线` : `${onlineCount} 在线 / ${totalCount} 成员`;
+    document.getElementById('count-text').textContent = label;
   }
+}
+
+function applyViewFilter() {
+  if (!lastMembersList.length) return;
+  lastMembersList.forEach(member => {
+    if (member.memberId === myMemberId) return;
+    if (showOnlyOnline && !member.isOnline) {
+      removeMemberMarker(member.memberId);
+    } else {
+      renderMemberMarker(member);
+    }
+  });
+  updateOnlineCount(lastMembersList);
 }
 
 // ========== 紧急信息 ==========
@@ -289,6 +317,14 @@ function openNavigation(address) {
 }
 
 // ========== UI 交互 ==========
+document.getElementById('toggle-view-btn').addEventListener('click', () => {
+  showOnlyOnline = !showOnlyOnline;
+  const btn = document.getElementById('toggle-view-btn');
+  btn.classList.toggle('show-all', !showOnlyOnline);
+  btn.title = showOnlyOnline ? '当前：仅显示在线' : '当前：显示全部';
+  applyViewFilter();
+});
+
 document.getElementById('emergency-toggle').addEventListener('click', () => {
   document.getElementById('emergency-content').classList.toggle('show');
 });
