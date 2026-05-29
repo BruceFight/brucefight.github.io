@@ -48,6 +48,28 @@ function wgs84ToGcj02(wgsLat, wgsLng) {
   return { lat: wgsLat + dLat, lng: wgsLng + dLng };
 }
 
+// ========== 音频上下文（iOS 需要在用户交互时预先解锁） ==========
+let sharedAudioCtx = null;
+
+function getAudioContext() {
+  if (!sharedAudioCtx) {
+    sharedAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  if (sharedAudioCtx.state === 'suspended') {
+    sharedAudioCtx.resume();
+  }
+  return sharedAudioCtx;
+}
+
+function unlockAudio() {
+  const ctx = getAudioContext();
+  const buf = ctx.createBuffer(1, 1, 22050);
+  const src = ctx.createBufferSource();
+  src.buffer = buf;
+  src.connect(ctx.destination);
+  src.start(0);
+}
+
 // ========== 状态 ==========
 let map;
 let myMarker;
@@ -455,10 +477,10 @@ function triggerAlarmFeedback() {
     ]);
   }
 
-  // 警报音：更大音量、更长持续时间，iOS 上至少能听到声音
+  // 警报音：使用预解锁的 AudioContext（iOS 兼容）
   try {
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    const freqs = [880, 440, 880, 440, 880, 440, 880, 440];
+    const audioCtx = getAudioContext();
+    const freqs = [880, 440, 880, 440, 880, 440, 880, 440, 880, 440];
     freqs.forEach((freq, i) => {
       const osc = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
@@ -466,8 +488,8 @@ function triggerAlarmFeedback() {
       gain.connect(audioCtx.destination);
       osc.frequency.value = freq;
       osc.type = 'square';
-      gain.gain.setValueAtTime(0.3, audioCtx.currentTime + i * 0.25);
-      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + i * 0.25 + 0.2);
+      gain.gain.setValueAtTime(0.4, audioCtx.currentTime + i * 0.25);
+      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + i * 0.25 + 0.22);
       osc.start(audioCtx.currentTime + i * 0.25);
       osc.stop(audioCtx.currentTime + i * 0.25 + 0.24);
     });
@@ -577,6 +599,7 @@ function doJoin(profile) {
 
 document.getElementById('join-form').addEventListener('submit', (e) => {
   e.preventDefault();
+  unlockAudio();
 
   const name = document.getElementById('input-name').value.trim();
   const contact = document.getElementById('input-contact').value.trim();
@@ -760,4 +783,9 @@ function startLocationWatch() {
 }
 
 // ========== 初始化 ==========
+document.addEventListener('click', function initAudio() {
+  unlockAudio();
+  document.removeEventListener('click', initAudio);
+}, { once: true });
+
 initMap();
