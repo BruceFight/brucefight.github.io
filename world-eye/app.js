@@ -107,16 +107,27 @@ const policeData = {
 };
 
 // ========== 地图 ==========
+let isInChina = true;
+let gaodeTileLayer, osmTileLayer;
+
 function initMap() {
   map = L.map('map', {
     zoomControl: false,
     attributionControl: false
   }).setView([30, 110], 3);
 
-  L.tileLayer('https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}', {
+  gaodeTileLayer = L.tileLayer('https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}', {
     maxZoom: 18,
     subdomains: ['1', '2', '3', '4']
-  }).addTo(map);
+  });
+
+  osmTileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    subdomains: ['a', 'b', 'c'],
+    attribution: '&copy; OpenStreetMap'
+  });
+
+  gaodeTileLayer.addTo(map);
 
   L.control.zoom({ position: 'bottomright' }).addTo(map);
 
@@ -124,21 +135,40 @@ function initMap() {
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         myLatLng = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-        const gcj = wgs84ToGcj02(myLatLng.lat, myLatLng.lng);
-        map.setView([gcj.lat, gcj.lng], 13);
-        addSelfMarker(gcj.lat, gcj.lng);
+        switchTileLayer(myLatLng.lat, myLatLng.lng);
+        const display = toDisplayCoord(myLatLng.lat, myLatLng.lng);
+        map.setView([display.lat, display.lng], 13);
+        addSelfMarker(display.lat, display.lng);
         updateEmergencyInfo(myLatLng.lat, myLatLng.lng);
       },
       () => {
         myLatLng = { lat: 39.9042, lng: 116.4074 };
-        const gcj = wgs84ToGcj02(myLatLng.lat, myLatLng.lng);
-        map.setView([gcj.lat, gcj.lng], 10);
-        addSelfMarker(gcj.lat, gcj.lng);
+        switchTileLayer(myLatLng.lat, myLatLng.lng);
+        const display = toDisplayCoord(myLatLng.lat, myLatLng.lng);
+        map.setView([display.lat, display.lng], 10);
+        addSelfMarker(display.lat, display.lng);
         updateEmergencyInfo(myLatLng.lat, myLatLng.lng);
       },
       { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
     );
   }
+}
+
+function switchTileLayer(lat, lng) {
+  const inChina = !outOfChina(lat, lng);
+  if (inChina === isInChina && map.hasLayer(gaodeTileLayer || osmTileLayer)) return;
+  isInChina = inChina;
+  if (isInChina) {
+    if (map.hasLayer(osmTileLayer)) map.removeLayer(osmTileLayer);
+    if (!map.hasLayer(gaodeTileLayer)) gaodeTileLayer.addTo(map);
+  } else {
+    if (map.hasLayer(gaodeTileLayer)) map.removeLayer(gaodeTileLayer);
+    if (!map.hasLayer(osmTileLayer)) osmTileLayer.addTo(map);
+  }
+}
+
+function toDisplayCoord(lat, lng) {
+  return isInChina ? wgs84ToGcj02(lat, lng) : { lat, lng };
 }
 
 function addSelfMarker(lat, lng) {
@@ -162,7 +192,7 @@ function addSelfMarker(lat, lng) {
 function renderMemberMarker(member) {
   if (member.memberId === myMemberId) return;
 
-  const gcj = wgs84ToGcj02(member.lat, member.lng);
+  const display = toDisplayCoord(member.lat, member.lng);
   const isOnline = member.isOnline;
   const typeClass = member.type === 'team' ? 'team' : 'individual';
   const statusClass = isOnline ? '' : ' offline';
@@ -182,10 +212,10 @@ function renderMemberMarker(member) {
   });
 
   if (memberMarkers[member.memberId]) {
-    memberMarkers[member.memberId].setLatLng([gcj.lat, gcj.lng]);
+    memberMarkers[member.memberId].setLatLng([display.lat, display.lng]);
     memberMarkers[member.memberId].setIcon(icon);
   } else {
-    const marker = L.marker([gcj.lat, gcj.lng], { icon }).addTo(map);
+    const marker = L.marker([display.lat, display.lng], { icon }).addTo(map);
     const statusText = isOnline ? '🟢 在线' : '⚪ 离线';
     const popupContent = `
       <div style="min-width:150px">
@@ -323,18 +353,19 @@ function doJoin(profile) {
     iconSize: [20, 20],
     iconAnchor: [10, 10]
   });
-  const selfGcj = wgs84ToGcj02(
+  const selfDisplay = toDisplayCoord(
     myLatLng ? myLatLng.lat : 39.9042,
     myLatLng ? myLatLng.lng : 116.4074
   );
-  myMarker = L.marker([selfGcj.lat, selfGcj.lng], { icon }).addTo(map);
+  myMarker = L.marker([selfDisplay.lat, selfDisplay.lng], { icon }).addTo(map);
 
   if (navigator.geolocation) {
     navigator.geolocation.watchPosition(
       (pos) => {
         myLatLng = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-        const gcj = wgs84ToGcj02(myLatLng.lat, myLatLng.lng);
-        if (myMarker) myMarker.setLatLng([gcj.lat, gcj.lng]);
+        switchTileLayer(myLatLng.lat, myLatLng.lng);
+        const display = toDisplayCoord(myLatLng.lat, myLatLng.lng);
+        if (myMarker) myMarker.setLatLng([display.lat, display.lng]);
         socket.emit('update-location', myLatLng);
       },
       null,
@@ -412,8 +443,8 @@ socket.on('sync-members', (members) => {
 
 socket.on('member-moved', (data) => {
   if (memberMarkers[data.memberId]) {
-    const gcj = wgs84ToGcj02(data.lat, data.lng);
-    memberMarkers[data.memberId].setLatLng([gcj.lat, gcj.lng]);
+    const display = toDisplayCoord(data.lat, data.lng);
+    memberMarkers[data.memberId].setLatLng([display.lat, display.lng]);
   }
 });
 
