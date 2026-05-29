@@ -540,6 +540,73 @@ html, body {
   to { opacity: 1; }
 }
 
+/* 导航面板 */
+.nav-panel {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1500;
+  background: #fff;
+  padding: 16px 20px;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+  border-radius: 20px 20px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  animation: slideUp 0.3s ease;
+}
+
+.nav-panel.hidden {
+  display: none;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.nav-info {
+  flex: 1;
+}
+
+.nav-target {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+.nav-target strong {
+  color: #1a1a1a;
+  margin-left: 4px;
+}
+
+.nav-details {
+  display: flex;
+  gap: 16px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.nav-close-btn {
+  padding: 10px 20px;
+  background: #ef4444;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 0.2s;
+}
+
+.nav-close-btn:hover {
+  opacity: 0.9;
+}
+
 /* 响应式 */
 @media (max-width: 480px) {
   .emergency-content {

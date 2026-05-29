@@ -61,6 +61,8 @@ let showOnlyOnline = false;
 let lastMembersList = [];
 let isStealth = false;
 let watchId = null;
+let navRouteLine = null;
+let navTargetMarker = null;
 
 // ========== 本地缓存 ==========
 function saveProfile(profile) {
@@ -226,18 +228,15 @@ function renderMemberMarker(member) {
   } else {
     const marker = L.marker([display.lat, display.lng], { icon }).addTo(map);
     const statusText = isOnline ? '🟢 在线' : '⚪ 离线';
-    const navUrl = /iPhone|iPad|iPod/i.test(navigator.userAgent)
-      ? `maps://maps.apple.com/?daddr=${member.lat},${member.lng}`
-      : `https://www.google.com/maps/dir/?api=1&destination=${member.lat},${member.lng}`;
     const popupContent = `
       <div style="min-width:160px">
         <strong>${member.name}</strong> <small>${statusText}</small><br/>
         <span style="color:#666">${member.type === 'team' ? '团队' : '个人'}${member.memberCount ? ' · ' + member.memberCount + '人' : ''}</span><br/>
         <a href="tel:${member.contact}" style="color:#2563eb;text-decoration:none">📞 ${member.contact}</a><br/>
-        <a href="${navUrl}" target="_blank" rel="noopener"
-           style="display:inline-block;margin-top:6px;padding:5px 12px;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border-radius:16px;text-decoration:none;font-size:13px;font-weight:500">
+        <button onclick="startNavigation(${member.lat}, ${member.lng}, '${member.name.replace(/'/g, "\\'")}')"
+           style="display:inline-block;margin-top:6px;padding:5px 12px;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;border-radius:16px;font-size:13px;font-weight:500;cursor:pointer">
           🧭 导航前往
-        </a>
+        </button>
       </div>
     `;
     marker.bindPopup(popupContent);
@@ -519,6 +518,92 @@ socket.on('member-moved', (data) => {
   if (memberMarkers[data.memberId]) {
     const display = toDisplayCoord(data.lat, data.lng);
     memberMarkers[data.memberId].setLatLng([display.lat, display.lng]);
+  }
+});
+
+// ========== 页面内导航 ==========
+async function startNavigation(destLat, destLng, destName) {
+  if (!myLatLng) {
+    alert('正在获取你的位置，请稍后再试');
+    return;
+  }
+
+  map.closePopup();
+
+  document.getElementById('nav-target-name').textContent = destName;
+  document.getElementById('nav-distance').textContent = '计算中...';
+  document.getElementById('nav-duration').textContent = '';
+  document.getElementById('nav-panel').classList.remove('hidden');
+
+  clearNavigation();
+
+  try {
+    const url = `https://router.project-osrm.org/route/v1/driving/${myLatLng.lng},${myLatLng.lat};${destLng},${destLat}?overview=full&geometries=geojson`;
+    const res = await fetch(url);
+    const data = await res.json();
+
+    if (data.code !== 'Ok' || !data.routes.length) {
+      document.getElementById('nav-distance').textContent = '无法规划路线';
+      const destDisplay = toDisplayCoord(destLat, destLng);
+      const selfDisplay = toDisplayCoord(myLatLng.lat, myLatLng.lng);
+      navRouteLine = L.polyline([
+        [selfDisplay.lat, selfDisplay.lng],
+        [destDisplay.lat, destDisplay.lng]
+      ], { color: '#667eea', weight: 3, dashArray: '8, 8', opacity: 0.7 }).addTo(map);
+      map.fitBounds(navRouteLine.getBounds(), { padding: [60, 60] });
+      return;
+    }
+
+    const route = data.routes[0];
+    const distKm = (route.distance / 1000).toFixed(1);
+    const durMin = Math.ceil(route.duration / 60);
+    const durText = durMin >= 60
+      ? `${Math.floor(durMin / 60)}小时${durMin % 60}分钟`
+      : `${durMin}分钟`;
+
+    document.getElementById('nav-distance').textContent = `📏 ${distKm} 公里`;
+    document.getElementById('nav-duration').textContent = `⏱ ${durText}`;
+
+    const coords = route.geometry.coordinates.map(([lng, lat]) => {
+      const d = toDisplayCoord(lat, lng);
+      return [d.lat, d.lng];
+    });
+
+    navRouteLine = L.polyline(coords, {
+      color: '#667eea',
+      weight: 5,
+      opacity: 0.8
+    }).addTo(map);
+
+    map.fitBounds(navRouteLine.getBounds(), { padding: [60, 100] });
+
+  } catch (err) {
+    console.warn('路线规划失败:', err);
+    document.getElementById('nav-distance').textContent = '路线规划失败';
+
+    const destDisplay = toDisplayCoord(destLat, destLng);
+    const selfDisplay = toDisplayCoord(myLatLng.lat, myLatLng.lng);
+    navRouteLine = L.polyline([
+      [selfDisplay.lat, selfDisplay.lng],
+      [destDisplay.lat, destDisplay.lng]
+    ], { color: '#667eea', weight: 3, dashArray: '8, 8', opacity: 0.7 }).addTo(map);
+    map.fitBounds(navRouteLine.getBounds(), { padding: [60, 60] });
+  }
+}
+
+function clearNavigation() {
+  if (navRouteLine) {
+    map.removeLayer(navRouteLine);
+    navRouteLine = null;
+  }
+}
+
+document.getElementById('nav-close-btn').addEventListener('click', () => {
+  clearNavigation();
+  document.getElementById('nav-panel').classList.add('hidden');
+  if (myLatLng) {
+    const display = toDisplayCoord(myLatLng.lat, myLatLng.lng);
+    map.setView([display.lat, display.lng], 13);
   }
 });
 

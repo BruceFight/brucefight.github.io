@@ -91,6 +91,21 @@
 
   <script src="https://cdn.bootcdn.net/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
   <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  <!-- 导航面板 -->
+  <div id="nav-panel" class="nav-panel hidden">
+    <div class="nav-info">
+      <div class="nav-target">
+        <span>🧭 导航至</span>
+        <strong id="nav-target-name"></strong>
+      </div>
+      <div class="nav-details">
+        <span id="nav-distance"></span>
+        <span id="nav-duration"></span>
+      </div>
+    </div>
+    <button id="nav-close-btn" class="nav-close-btn">结束导航</button>
+  </div>
+
   <script>document.write('<script src="app.js?v=' + Date.now() + '"><\/script>');</script>
 </body>
 </html>
