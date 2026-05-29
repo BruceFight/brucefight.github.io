@@ -56,6 +56,7 @@ let hasJoined = false;
 let selectedType = 'individual';
 let memberMarkers = {};
 let myMemberId = null;
+let myJoinData = null;
 
 // ========== 本地缓存 ==========
 function saveProfile(profile) {
@@ -322,7 +323,7 @@ document.querySelectorAll('.type-btn').forEach(btn => {
 });
 
 function doJoin(profile) {
-  const joinData = {
+  myJoinData = {
     memberId: profile.memberId || null,
     name: profile.name,
     type: profile.type,
@@ -332,7 +333,7 @@ function doJoin(profile) {
     lng: myLatLng ? myLatLng.lng : 116.4074
   };
 
-  socket.emit('join-world', joinData);
+  socket.emit('join-world', myJoinData);
 
   hasJoined = true;
   document.getElementById('join-modal').classList.add('hidden');
@@ -405,28 +406,34 @@ document.getElementById('join-form').addEventListener('submit', (e) => {
 
 // ========== Socket 事件 ==========
 socket.on('connect', () => {
-  console.log('已连接到观界天眼服务');
+  console.log('[观界天眼] 已连接, socketId:', socket.id);
   const cached = loadProfile();
-  if (cached && cached.memberId) {
+  console.log('[观界天眼] 缓存档案:', cached);
+  if (cached && cached.memberId && cached.name) {
+    console.log('[观界天眼] 自动重连加入:', cached.name);
     myMemberId = cached.memberId;
     doJoin(cached);
   }
 });
 
 socket.on('connect_error', (err) => {
-  console.warn('连接失败:', err.message);
+  console.warn('[观界天眼] 连接失败:', err.message);
 });
 
 socket.on('disconnect', (reason) => {
-  console.warn('连接断开:', reason);
+  console.warn('[观界天眼] 连接断开:', reason);
 });
 
 socket.on('join-confirmed', (data) => {
+  console.log('[观界天眼] 加入确认, memberId:', data.memberId);
   myMemberId = data.memberId;
-  const cached = loadProfile() || {};
-  cached.memberId = data.memberId;
-  saveProfile(cached);
-  console.log(`加入确认, memberId: ${data.memberId}, 总成员: ${data.totalMembers}, 在线: ${data.onlineMembers}`);
+  const profile = loadProfile() || {};
+  profile.memberId = data.memberId;
+  if (!profile.name && myJoinData) {
+    Object.assign(profile, myJoinData);
+  }
+  saveProfile(profile);
+  console.log('[观界天眼] 已保存档案:', profile);
 });
 
 socket.on('sync-members', (members) => {
