@@ -227,6 +227,8 @@ defaults: # 将所有配置选项使用<https://jekyllrb.com/docs/configuration/
               #  href: /tags/
               - title: '<i class="fas fa-archive fa-fw"></i> 归档'
                 href: /archive/
+              - title: '<i class="fas fa-globe-asia fa-fw"></i> 观界天眼'
+                href: /world-eye/
             simple_jekyll_search: # 侧边栏的全站搜索
               enable: false
               full_text_search: false # 可能导致缓慢的搜索和加载
@@ -641,6 +643,11 @@ defaults: # 将所有配置选项使用<https://jekyllrb.com/docs/configuration/
                 homePageUrl='/'
                 homePageName='回到我的主页'
               ></script>
+
+exclude:
+  - world-eye-server
+  - node_modules
+  - Gemfile.lock
 
 compress_html: # <https://github.com/penibelst/jekyll-compress-html>
   clippings: all

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>观界天眼 - 全球位置共享</title>
+  <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="map"></div>
+
+  <!-- 右上角紧急联系信息面板 -->
+  <div id="emergency-panel">
+    <div class="emergency-toggle" id="emergency-toggle">
+      <span class="emergency-icon">🆘</span>
+    </div>
+    <div class="emergency-content" id="emergency-content">
+      <h3>紧急联系</h3>
+      <div class="emergency-section">
+        <h4>🏛️ 中国大使馆</h4>
+        <p id="embassy-name" class="embassy-name"></p>
+        <p id="embassy-address" class="clickable-address"></p>
+        <a id="embassy-phone" class="phone-link" href="tel:"></a>
+      </div>
+      <div class="emergency-section">
+        <h4>🚔 当地警局</h4>
+        <p id="police-name" class="police-name"></p>
+        <p id="police-address" class="clickable-address"></p>
+        <a id="police-phone" class="phone-link" href="tel:"></a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 加入世界按钮 -->
+  <div id="join-btn-container">
+    <button id="join-world-btn" class="join-btn">
+      <span class="btn-icon">🌍</span>
+      <span>加入世界</span>
+    </button>
+  </div>
+
+  <!-- 在线人数显示 -->
+  <div id="online-count">
+    <span class="online-dot"></span>
+    <span id="count-text">0 人在线</span>
+  </div>
+
+  <!-- 加入世界弹窗 -->
+  <div id="join-modal" class="modal hidden">
+    <div class="modal-overlay"></div>
+    <div class="modal-content">
+      <h2>加入世界</h2>
+      <p class="modal-desc">选择你的身份类型，填写信息后加入全球网络</p>
+
+      <div class="type-selector">
+        <button class="type-btn active" data-type="individual">
+          <span class="type-icon">👤</span>
+          <span>个人</span>
+        </button>
+        <button class="type-btn" data-type="team">
+          <span class="type-icon">👥</span>
+          <span>团队</span>
+        </button>
+      </div>
+
+      <form id="join-form">
+        <div class="form-group">
+          <label for="input-name">名称 *</label>
+          <input type="text" id="input-name" placeholder="输入你的名称" required />
+        </div>
+        <div class="form-group">
+          <label for="input-contact">联系方式 *</label>
+          <input type="tel" id="input-contact" placeholder="输入电话号码" required />
+        </div>
+        <div class="form-group hidden" id="team-count-group">
+          <label for="input-count">团队人数 *</label>
+          <input type="number" id="input-count" placeholder="输入团队人数" min="2" />
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn-cancel" id="cancel-btn">取消</button>
+          <button type="submit" class="btn-submit">确认加入</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://cdn.bootcdn.net/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

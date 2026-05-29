@@ -42,3 +42,6 @@ validation-report.json
 # Folders to ignore
 node_modules
 bower_components
+
+# World Eye server (deployed separately)
+world-eye-server/node_modules
