@@ -399,6 +399,7 @@ document.getElementById('join-form').addEventListener('submit', (e) => {
     memberCount: selectedType === 'team' ? parseInt(memberCount) : null
   };
 
+  saveProfile(profile);
   doJoin(profile);
 });
 
@@ -422,11 +423,9 @@ socket.on('disconnect', (reason) => {
 
 socket.on('join-confirmed', (data) => {
   myMemberId = data.memberId;
-  const cached = loadProfile();
-  if (cached) {
-    cached.memberId = data.memberId;
-    saveProfile(cached);
-  }
+  const cached = loadProfile() || {};
+  cached.memberId = data.memberId;
+  saveProfile(cached);
   console.log(`加入确认, memberId: ${data.memberId}, 总成员: ${data.totalMembers}, 在线: ${data.onlineMembers}`);
 });
 
