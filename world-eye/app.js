@@ -366,6 +366,114 @@ document.getElementById('stealth-btn').addEventListener('click', () => {
   }
 });
 
+// ========== 一键报警 ==========
+let alarmCooldown = false;
+let lastAlarmData = null;
+
+document.getElementById('alarm-btn').addEventListener('click', () => {
+  if (alarmCooldown) return;
+  if (!hasJoined) {
+    alert('请先加入世界');
+    return;
+  }
+
+  alarmCooldown = true;
+  const btn = document.getElementById('alarm-btn');
+  btn.classList.add('alarm-sending');
+
+  socket.emit('send-alarm');
+
+  setTimeout(() => {
+    alarmCooldown = false;
+    btn.classList.remove('alarm-sending');
+  }, 10000);
+});
+
+let alarmMarkerTimer = null;
+
+socket.on('alarm-received', (data) => {
+  lastAlarmData = data;
+  document.getElementById('alarm-sender-name').textContent = data.name;
+  document.getElementById('alarm-overlay').classList.remove('hidden');
+
+  if (navigator.vibrate) {
+    navigator.vibrate([300, 100, 300, 100, 300, 100, 600]);
+  }
+
+  try {
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    [800, 600, 800, 600, 800].forEach((freq, i) => {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.frequency.value = freq;
+      osc.type = 'square';
+      gain.gain.value = 0.15;
+      osc.start(audioCtx.currentTime + i * 0.3);
+      osc.stop(audioCtx.currentTime + i * 0.3 + 0.2);
+    });
+  } catch (e) { /* audio not supported */ }
+
+  highlightAlarmMarker(data.memberId, data.name, data.lat, data.lng);
+});
+
+function highlightAlarmMarker(memberId, name, lat, lng) {
+  if (alarmMarkerTimer) clearTimeout(alarmMarkerTimer);
+
+  const display = toDisplayCoord(lat, lng);
+  const alarmIcon = L.divIcon({
+    className: 'member-marker alarm-marker-flash',
+    html: `
+      <div class="alarm-ring"></div>
+      <div class="marker-label alarm-flash-label">🚨 ${name}</div>
+      <div class="marker-dot alarm-flash-dot"></div>
+    `,
+    iconSize: [20, 20],
+    iconAnchor: [10, 10]
+  });
+
+  if (memberMarkers[memberId]) {
+    memberMarkers[memberId].setIcon(alarmIcon);
+  } else {
+    const marker = L.marker([display.lat, display.lng], { icon: alarmIcon }).addTo(map);
+    memberMarkers[memberId] = marker;
+  }
+
+  alarmMarkerTimer = setTimeout(() => {
+    const member = lastMembersList.find(m => m.memberId === memberId);
+    if (member) {
+      renderMemberMarker(member);
+    }
+  }, 15000);
+}
+
+document.getElementById('alarm-dismiss-btn').addEventListener('click', () => {
+  document.getElementById('alarm-overlay').classList.add('hidden');
+  restoreAlarmMarker();
+  lastAlarmData = null;
+});
+
+document.getElementById('alarm-locate-btn').addEventListener('click', () => {
+  document.getElementById('alarm-overlay').classList.add('hidden');
+  if (lastAlarmData && lastAlarmData.lat && lastAlarmData.lng) {
+    const display = toDisplayCoord(lastAlarmData.lat, lastAlarmData.lng);
+    map.setView([display.lat, display.lng], 16);
+  }
+  lastAlarmData = null;
+});
+
+function restoreAlarmMarker() {
+  if (alarmMarkerTimer) {
+    clearTimeout(alarmMarkerTimer);
+    alarmMarkerTimer = null;
+  }
+  if (lastAlarmData) {
+    const member = lastMembersList.find(m => m.memberId === lastAlarmData.memberId);
+    if (member) renderMemberMarker(member);
+  }
+}
+
 document.getElementById('emergency-toggle').addEventListener('click', () => {
   document.getElementById('emergency-content').classList.toggle('show');
 });
@@ -440,6 +548,7 @@ function doJoin(profile) {
   startLocationWatch();
 
   document.getElementById('stealth-btn').classList.remove('hidden');
+  document.getElementById('alarm-btn').classList.remove('hidden');
 }
 
 document.getElementById('join-form').addEventListener('submit', (e) => {

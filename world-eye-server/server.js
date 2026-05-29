@@ -161,6 +161,21 @@ io.on('connection', (socket) => {
     }
   });
 
+  socket.on('send-alarm', () => {
+    const memberId = socket.memberId;
+    if (!memberId) return;
+    const member = members.get(memberId);
+    if (!member) return;
+    console.log(`[${new Date().toISOString()}] 🚨 ${member.name} 发出报警`);
+    socket.broadcast.emit('alarm-received', {
+      memberId,
+      name: member.name,
+      lat: member.lat,
+      lng: member.lng,
+      timestamp: Date.now()
+    });
+  });
+
   socket.on('toggle-stealth', (data) => {
     const memberId = socket.memberId;
     if (!memberId) return;

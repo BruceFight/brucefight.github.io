@@ -15,6 +15,9 @@
     <div class="emergency-toggle" id="emergency-toggle">
       <span class="emergency-icon">🆘</span>
     </div>
+    <div class="emergency-toggle alarm-toggle hidden" id="alarm-btn" title="一键报警 - 通知所有在线成员">
+      <span class="emergency-icon" id="alarm-icon">🚨</span>
+    </div>
     <div class="emergency-toggle stealth-toggle hidden" id="stealth-btn" title="点击隐身">
       <span class="emergency-icon" id="stealth-icon">👁️</span>
     </div>
@@ -89,6 +92,19 @@
           <button type="submit" class="btn-submit">确认加入</button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- 报警弹层 -->
+  <div id="alarm-overlay" class="alarm-overlay hidden">
+    <div class="alarm-content">
+      <div class="alarm-pulse-ring"></div>
+      <div class="alarm-emoji">🚨</div>
+      <div class="alarm-title">紧急报警</div>
+      <div class="alarm-sender" id="alarm-sender-name"></div>
+      <div class="alarm-hint">正在请求你的帮助</div>
+      <button id="alarm-locate-btn" class="alarm-locate-btn">📍 定位 TA</button>
+      <button id="alarm-dismiss-btn" class="alarm-dismiss-btn">收到</button>
     </div>
   </div>
 

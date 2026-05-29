@@ -184,6 +184,34 @@ html, body {
   box-shadow: 0 8px 24px rgba(16, 185, 129, 0.4);
 }
 
+.alarm-toggle {
+  margin-top: 20px;
+}
+
+.alarm-toggle.hidden {
+  display: none;
+}
+
+.alarm-toggle.alarm-sending {
+  background: #ef4444;
+  animation: alarmPulse 0.5s ease infinite;
+}
+
+.alarm-toggle.alarm-sending .emergency-icon {
+  animation: alarmShake 0.3s ease infinite;
+}
+
+@keyframes alarmPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.5); }
+  50% { box-shadow: 0 0 0 12px rgba(239, 68, 68, 0); }
+}
+
+@keyframes alarmShake {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-15deg); }
+  75% { transform: rotate(15deg); }
+}
+
 .stealth-toggle {
   margin-top: 20px;
 }
@@ -497,6 +525,65 @@ html, body {
   50% { box-shadow: 0 0 0 12px rgba(239, 68, 68, 0); }
 }
 
+/* 报警闪烁标记 */
+.alarm-marker-flash {
+  z-index: 900 !important;
+}
+
+.alarm-marker-flash .alarm-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 3px solid rgba(239, 68, 68, 0.6);
+  animation: alarmRingExpand 1s ease-out infinite;
+}
+
+@keyframes alarmRingExpand {
+  0% { width: 20px; height: 20px; opacity: 1; }
+  100% { width: 80px; height: 80px; opacity: 0; }
+}
+
+.alarm-flash-label {
+  background: rgba(239, 68, 68, 0.95) !important;
+  color: #fff !important;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+  padding: 5px 12px !important;
+  animation: alarmLabelFlash 0.4s ease infinite alternate, alarmLabelShake 0.15s ease infinite;
+}
+
+.alarm-flash-label::after {
+  border-top-color: rgba(239, 68, 68, 0.95) !important;
+}
+
+@keyframes alarmLabelFlash {
+  0% { background: rgba(239, 68, 68, 0.95); box-shadow: 0 0 8px rgba(239, 68, 68, 0.6); }
+  100% { background: rgba(185, 28, 28, 0.95); box-shadow: 0 0 20px rgba(239, 68, 68, 0.9); }
+}
+
+@keyframes alarmLabelShake {
+  0%, 100% { transform: translateX(-50%) rotate(0deg); }
+  25% { transform: translateX(-50%) rotate(-3deg) translateX(-2px); }
+  75% { transform: translateX(-50%) rotate(3deg) translateX(2px); }
+}
+
+.alarm-flash-dot {
+  background: #ef4444 !important;
+  width: 20px !important;
+  height: 20px !important;
+  border: 3px solid #fff !important;
+  animation: alarmDotPulse 0.5s ease infinite alternate;
+}
+
+@keyframes alarmDotPulse {
+  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+  100% { transform: scale(1.4); box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); }
+}
+
 /* 离线成员样式 */
 .marker-label.offline {
   background: rgba(156, 163, 175, 0.8);
@@ -621,6 +708,129 @@ html, body {
 
 .nav-close-btn:hover {
   opacity: 0.9;
+}
+
+/* 报警弹层 */
+.alarm-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 5000;
+  background: rgba(239, 68, 68, 0.15);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: alarmFlash 0.6s ease 3;
+}
+
+.alarm-overlay.hidden {
+  display: none;
+}
+
+@keyframes alarmFlash {
+  0%, 100% { background: rgba(239, 68, 68, 0.15); }
+  50% { background: rgba(239, 68, 68, 0.35); }
+}
+
+.alarm-content {
+  position: relative;
+  text-align: center;
+  background: #fff;
+  border-radius: 24px;
+  padding: 40px 32px 32px;
+  width: 90%;
+  max-width: 320px;
+  box-shadow: 0 20px 60px rgba(239, 68, 68, 0.3);
+  animation: alarmBounce 0.4s ease;
+}
+
+@keyframes alarmBounce {
+  0% { transform: scale(0.8); opacity: 0; }
+  60% { transform: scale(1.05); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.alarm-pulse-ring {
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: rgba(239, 68, 68, 0.15);
+  animation: ringExpand 1.5s ease infinite;
+}
+
+@keyframes ringExpand {
+  0% { transform: translateX(-50%) scale(0.8); opacity: 1; }
+  100% { transform: translateX(-50%) scale(2); opacity: 0; }
+}
+
+.alarm-emoji {
+  font-size: 48px;
+  margin-bottom: 12px;
+  animation: alarmShake 0.3s ease infinite;
+}
+
+.alarm-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #ef4444;
+  margin-bottom: 8px;
+}
+
+.alarm-sender {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 4px;
+}
+
+.alarm-hint {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 24px;
+}
+
+.alarm-locate-btn {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 10px;
+  transition: opacity 0.2s;
+}
+
+.alarm-locate-btn:hover {
+  opacity: 0.9;
+}
+
+.alarm-dismiss-btn {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  background: #f3f4f6;
+  color: #374151;
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.alarm-dismiss-btn:hover {
+  background: #e5e7eb;
 }
 
 /* 响应式 */
