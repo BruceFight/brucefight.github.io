@@ -90,6 +90,7 @@ function generateId() {
 function getMembersWithStatus() {
   const result = [];
   for (const [memberId, member] of members) {
+    if (member.stealth) continue;
     result.push({
       ...member,
       isOnline: onlineSockets.has(memberId)
@@ -157,6 +158,19 @@ io.on('connection', (socket) => {
         lat: data.lat,
         lng: data.lng
       });
+    }
+  });
+
+  socket.on('toggle-stealth', (data) => {
+    const memberId = socket.memberId;
+    if (!memberId) return;
+    const member = members.get(memberId);
+    if (member) {
+      member.stealth = !!data.stealth;
+      members.set(memberId, member);
+      saveMembers();
+      broadcastMemberList();
+      console.log(`[${new Date().toISOString()}] ${member.name} ${member.stealth ? '开启隐身' : '关闭隐身'}`);
     }
   });
 

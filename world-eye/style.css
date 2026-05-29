@@ -184,6 +184,41 @@ html, body {
   box-shadow: 0 8px 24px rgba(16, 185, 129, 0.4);
 }
 
+#join-btn-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.stealth-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: none;
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.stealth-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.stealth-btn.stealthed {
+  background: #374151;
+  box-shadow: 0 4px 12px rgba(55, 65, 81, 0.4);
+}
+
+.stealth-btn.hidden {
+  display: none;
+}
+
 /* 在线人数 */
 #online-count {
   position: fixed;

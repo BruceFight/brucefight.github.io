@@ -59,6 +59,8 @@ let myMemberId = null;
 let myJoinData = null;
 let showOnlyOnline = false;
 let lastMembersList = [];
+let isStealth = false;
+let watchId = null;
 
 // ========== 本地缓存 ==========
 function saveProfile(profile) {
@@ -325,6 +327,46 @@ document.getElementById('toggle-view-btn').addEventListener('click', () => {
   applyViewFilter();
 });
 
+document.getElementById('stealth-btn').addEventListener('click', () => {
+  isStealth = !isStealth;
+  const btn = document.getElementById('stealth-btn');
+  const icon = document.getElementById('stealth-icon');
+
+  if (isStealth) {
+    btn.classList.add('stealthed');
+    icon.textContent = '🙈';
+    btn.title = '隐身中 - 点击恢复显示';
+    if (myMarker) {
+      map.removeLayer(myMarker);
+      myMarker = null;
+    }
+    if (watchId !== null) {
+      navigator.geolocation.clearWatch(watchId);
+      watchId = null;
+    }
+    socket.emit('toggle-stealth', { stealth: true });
+  } else {
+    btn.classList.remove('stealthed');
+    icon.textContent = '👁️';
+    btn.title = '点击隐身';
+    if (myLatLng) {
+      const display = toDisplayCoord(myLatLng.lat, myLatLng.lng);
+      const cached = loadProfile();
+      const typeClass = (cached?.type === 'team') ? 'team' : 'individual';
+      const label = (cached?.type === 'team') ? `${cached.name} (${cached.memberCount}人)` : (cached?.name || '我');
+      const markerIcon = L.divIcon({
+        className: 'member-marker',
+        html: `<div class="marker-label ${typeClass}">${label}</div><div class="marker-dot self"></div>`,
+        iconSize: [20, 20],
+        iconAnchor: [10, 10]
+      });
+      myMarker = L.marker([display.lat, display.lng], { icon: markerIcon }).addTo(map);
+    }
+    socket.emit('toggle-stealth', { stealth: false });
+    startLocationWatch();
+  }
+});
+
 document.getElementById('emergency-toggle').addEventListener('click', () => {
   document.getElementById('emergency-content').classList.toggle('show');
 });
@@ -396,19 +438,9 @@ function doJoin(profile) {
   );
   myMarker = L.marker([selfDisplay.lat, selfDisplay.lng], { icon }).addTo(map);
 
-  if (navigator.geolocation) {
-    navigator.geolocation.watchPosition(
-      (pos) => {
-        myLatLng = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-        switchTileLayer(myLatLng.lat, myLatLng.lng);
-        const display = toDisplayCoord(myLatLng.lat, myLatLng.lng);
-        if (myMarker) myMarker.setLatLng([display.lat, display.lng]);
-        socket.emit('update-location', myLatLng);
-      },
-      null,
-      { enableHighAccuracy: true, maximumAge: 0 }
-    );
-  }
+  startLocationWatch();
+
+  document.getElementById('stealth-btn').classList.remove('hidden');
 }
 
 document.getElementById('join-form').addEventListener('submit', (e) => {
@@ -489,6 +521,25 @@ socket.on('member-moved', (data) => {
     memberMarkers[data.memberId].setLatLng([display.lat, display.lng]);
   }
 });
+
+// ========== 位置追踪 ==========
+function startLocationWatch() {
+  if (watchId !== null) return;
+  if (!navigator.geolocation) return;
+  watchId = navigator.geolocation.watchPosition(
+    (pos) => {
+      myLatLng = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+      switchTileLayer(myLatLng.lat, myLatLng.lng);
+      if (!isStealth) {
+        const display = toDisplayCoord(myLatLng.lat, myLatLng.lng);
+        if (myMarker) myMarker.setLatLng([display.lat, display.lng]);
+        socket.emit('update-location', myLatLng);
+      }
+    },
+    null,
+    { enableHighAccuracy: true, maximumAge: 0 }
+  );
+}
 
 // ========== 初始化 ==========
 initMap();
