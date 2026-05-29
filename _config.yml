@@ -3,8 +3,7 @@ description: | # 头像背后的信息（html格式），<br/>代表换行 http:
   <div>
     <p style="text-align:center">
       <B style="text-align:center">
-        菩提本无树，明镜亦非台。
-        本来无一物，何处惹尘埃！
+        不如听首歌！
       </B>
     </p>
     <a href="mailto:jhbcoolcoder@gmail.com">
@@ -43,15 +42,15 @@ defaults: # 将所有配置选项使用<https://jekyllrb.com/docs/configuration/
                 title="RSS"
                 type="application/rss+xml"
               />
-            - | # 网站小图标，可换成你自己的图片，改href中的部分即可
+            - | # 网站小图标
               <link
                 rel="apple-touch-icon-precomposed"
-                href="https://avatars.githubusercontent.com/u/15614200?s=96&v=4"
+                href="/assets/image/2026-05-29-icon.jpg"
               />
               <link
                 rel="shortcut
                 icon"
-                href="https://avatars.githubusercontent.com/u/15614200?s=96&v=4"
+                href="/assets/image/2026-05-29-icon.jpg"
               />
             - | # 来自lanyon的页面样式，不要改
               <link
@@ -214,7 +213,7 @@ defaults: # 将所有配置选项使用<https://jekyllrb.com/docs/configuration/
             disable: false # 是否不显示sidebar
             avatar: # 侧边栏显示的头像
               enable: true
-              img: https://avatars0.githubusercontent.com/u/15614200?s=400&u=357d0ce8e41c1a76eb0b366b6d0c41849db62667&v=4 # 头像的地址
+              img: /assets/image/2026-05-29-icon.jpg # 头像的地址
             nav: # 导航部分的内容，你也可以自己增加文字、图标（来自fontawesome）和对应的链
             #autoplay="autoplay" style="width:100%"
               - title: '
