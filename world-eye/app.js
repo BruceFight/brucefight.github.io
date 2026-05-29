@@ -1,7 +1,7 @@
 // ========== 后端服务地址配置 ==========
 // 本地开发: 'http://localhost:3000'
 // 生产环境: 填入部署后的后端地址，如 'https://world-eye-xxxx.onrender.com'
-const BACKEND_URL = window.WORLD_EYE_BACKEND || '';
+const BACKEND_URL = window.WORLD_EYE_BACKEND || 'https://world-eye.onrender.com';
 
 const socket = BACKEND_URL ? io(BACKEND_URL) : io();
 
