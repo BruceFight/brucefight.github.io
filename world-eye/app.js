@@ -10,6 +10,44 @@ const socket = io(BACKEND_URL, {
   timeout: 10000
 });
 
+// ========== WGS-84 → GCJ-02 坐标转换（修正高德地图偏移） ==========
+const PI = Math.PI;
+const A = 6378245.0;
+const EE = 0.00669342162296594323;
+
+function outOfChina(lat, lng) {
+  return lng < 72.004 || lng > 137.8347 || lat < 0.8293 || lat > 55.8271;
+}
+
+function transformLat(x, y) {
+  let ret = -100.0 + 2.0 * x + 3.0 * y + 0.2 * y * y + 0.1 * x * y + 0.2 * Math.sqrt(Math.abs(x));
+  ret += (20.0 * Math.sin(6.0 * x * PI) + 20.0 * Math.sin(2.0 * x * PI)) * 2.0 / 3.0;
+  ret += (20.0 * Math.sin(y * PI) + 40.0 * Math.sin(y / 3.0 * PI)) * 2.0 / 3.0;
+  ret += (160.0 * Math.sin(y / 12.0 * PI) + 320.0 * Math.sin(y * PI / 30.0)) * 2.0 / 3.0;
+  return ret;
+}
+
+function transformLng(x, y) {
+  let ret = 300.0 + x + 2.0 * y + 0.1 * x * x + 0.1 * x * y + 0.1 * Math.sqrt(Math.abs(x));
+  ret += (20.0 * Math.sin(6.0 * x * PI) + 20.0 * Math.sin(2.0 * x * PI)) * 2.0 / 3.0;
+  ret += (20.0 * Math.sin(x * PI) + 40.0 * Math.sin(x / 3.0 * PI)) * 2.0 / 3.0;
+  ret += (150.0 * Math.sin(x / 12.0 * PI) + 300.0 * Math.sin(x / 30.0 * PI)) * 2.0 / 3.0;
+  return ret;
+}
+
+function wgs84ToGcj02(wgsLat, wgsLng) {
+  if (outOfChina(wgsLat, wgsLng)) return { lat: wgsLat, lng: wgsLng };
+  let dLat = transformLat(wgsLng - 105.0, wgsLat - 35.0);
+  let dLng = transformLng(wgsLng - 105.0, wgsLat - 35.0);
+  const radLat = wgsLat / 180.0 * PI;
+  let magic = Math.sin(radLat);
+  magic = 1 - EE * magic * magic;
+  const sqrtMagic = Math.sqrt(magic);
+  dLat = (dLat * 180.0) / ((A * (1 - EE)) / (magic * sqrtMagic) * PI);
+  dLng = (dLng * 180.0) / (A / sqrtMagic * Math.cos(radLat) * PI);
+  return { lat: wgsLat + dLat, lng: wgsLng + dLng };
+}
+
 // ========== 状态 ==========
 let map;
 let myMarker;
@@ -86,17 +124,19 @@ function initMap() {
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         myLatLng = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-        map.setView([myLatLng.lat, myLatLng.lng], 13);
-        addSelfMarker(myLatLng.lat, myLatLng.lng);
+        const gcj = wgs84ToGcj02(myLatLng.lat, myLatLng.lng);
+        map.setView([gcj.lat, gcj.lng], 13);
+        addSelfMarker(gcj.lat, gcj.lng);
         updateEmergencyInfo(myLatLng.lat, myLatLng.lng);
       },
       () => {
         myLatLng = { lat: 39.9042, lng: 116.4074 };
-        map.setView([myLatLng.lat, myLatLng.lng], 10);
-        addSelfMarker(myLatLng.lat, myLatLng.lng);
+        const gcj = wgs84ToGcj02(myLatLng.lat, myLatLng.lng);
+        map.setView([gcj.lat, gcj.lng], 10);
+        addSelfMarker(gcj.lat, gcj.lng);
         updateEmergencyInfo(myLatLng.lat, myLatLng.lng);
       },
-      { enableHighAccuracy: true, timeout: 10000 }
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
     );
   }
 }
@@ -122,6 +162,7 @@ function addSelfMarker(lat, lng) {
 function renderMemberMarker(member) {
   if (member.memberId === myMemberId) return;
 
+  const gcj = wgs84ToGcj02(member.lat, member.lng);
   const isOnline = member.isOnline;
   const typeClass = member.type === 'team' ? 'team' : 'individual';
   const statusClass = isOnline ? '' : ' offline';
@@ -141,10 +182,10 @@ function renderMemberMarker(member) {
   });
 
   if (memberMarkers[member.memberId]) {
-    memberMarkers[member.memberId].setLatLng([member.lat, member.lng]);
+    memberMarkers[member.memberId].setLatLng([gcj.lat, gcj.lng]);
     memberMarkers[member.memberId].setIcon(icon);
   } else {
-    const marker = L.marker([member.lat, member.lng], { icon }).addTo(map);
+    const marker = L.marker([gcj.lat, gcj.lng], { icon }).addTo(map);
     const statusText = isOnline ? '🟢 在线' : '⚪ 离线';
     const popupContent = `
       <div style="min-width:150px">
@@ -282,20 +323,22 @@ function doJoin(profile) {
     iconSize: [20, 20],
     iconAnchor: [10, 10]
   });
-  myMarker = L.marker(
-    [myLatLng ? myLatLng.lat : 39.9042, myLatLng ? myLatLng.lng : 116.4074],
-    { icon }
-  ).addTo(map);
+  const selfGcj = wgs84ToGcj02(
+    myLatLng ? myLatLng.lat : 39.9042,
+    myLatLng ? myLatLng.lng : 116.4074
+  );
+  myMarker = L.marker([selfGcj.lat, selfGcj.lng], { icon }).addTo(map);
 
   if (navigator.geolocation) {
     navigator.geolocation.watchPosition(
       (pos) => {
         myLatLng = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-        if (myMarker) myMarker.setLatLng([myLatLng.lat, myLatLng.lng]);
+        const gcj = wgs84ToGcj02(myLatLng.lat, myLatLng.lng);
+        if (myMarker) myMarker.setLatLng([gcj.lat, gcj.lng]);
         socket.emit('update-location', myLatLng);
       },
       null,
-      { enableHighAccuracy: true }
+      { enableHighAccuracy: true, maximumAge: 0 }
     );
   }
 }
@@ -369,7 +412,8 @@ socket.on('sync-members', (members) => {
 
 socket.on('member-moved', (data) => {
   if (memberMarkers[data.memberId]) {
-    memberMarkers[data.memberId].setLatLng([data.lat, data.lng]);
+    const gcj = wgs84ToGcj02(data.lat, data.lng);
+    memberMarkers[data.memberId].setLatLng([gcj.lat, gcj.lng]);
   }
 });
 
