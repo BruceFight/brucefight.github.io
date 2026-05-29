@@ -197,6 +197,22 @@ html, body {
   display: none;
 }
 
+.watermark-brand {
+  margin-top: 16px;
+  text-align: center;
+  pointer-events: none;
+  user-select: none;
+}
+
+.watermark-text {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 3px;
+  color: rgba(0, 0, 0, 0.18);
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+}
+
 /* 在线人数 */
 #online-count {
   position: fixed;
