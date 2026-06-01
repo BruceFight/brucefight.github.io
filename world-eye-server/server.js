@@ -42,6 +42,7 @@ const INACTIVE_DAYS = 90;
 const members = new Map();
 const onlineSockets = new Map();
 const pushSubscriptions = new Map();
+const PUSH_FILE = path.join(__dirname, 'push-subscriptions.json');
 
 function loadMembers() {
   try {
@@ -75,7 +76,37 @@ function saveMembers() {
   }, 1000);
 }
 
+function loadPushSubscriptions() {
+  try {
+    if (fs.existsSync(PUSH_FILE)) {
+      const raw = fs.readFileSync(PUSH_FILE, 'utf-8');
+      const data = JSON.parse(raw);
+      for (const [id, sub] of Object.entries(data)) {
+        pushSubscriptions.set(id, sub);
+      }
+      console.log(`已加载 ${pushSubscriptions.size} 个推送订阅`);
+    }
+  } catch (err) {
+    console.error('加载推送订阅失败:', err.message);
+  }
+}
+
+let pushSaveTimer = null;
+function savePushSubscriptions() {
+  if (pushSaveTimer) return;
+  pushSaveTimer = setTimeout(() => {
+    pushSaveTimer = null;
+    try {
+      const obj = Object.fromEntries(pushSubscriptions);
+      fs.writeFileSync(PUSH_FILE, JSON.stringify(obj, null, 2), 'utf-8');
+    } catch (err) {
+      console.error('保存推送订阅失败:', err.message);
+    }
+  }, 1000);
+}
+
 loadMembers();
+loadPushSubscriptions();
 
 // ==================== API ====================
 
@@ -84,6 +115,7 @@ app.get('/health', (req, res) => {
     status: 'ok',
     totalMembers: members.size,
     onlineMembers: onlineSockets.size,
+    pushSubscriptions: pushSubscriptions.size,
     uptime: process.uptime()
   });
 });
@@ -102,13 +134,17 @@ app.post('/api/push-subscribe', (req, res) => {
     return res.status(400).json({ error: 'missing memberId or subscription' });
   }
   pushSubscriptions.set(memberId, subscription);
+  savePushSubscriptions();
   console.log(`[${new Date().toISOString()}] Push 订阅: ${memberId}, 总订阅: ${pushSubscriptions.size}`);
   res.json({ ok: true });
 });
 
 app.post('/api/push-unsubscribe', (req, res) => {
   const { memberId } = req.body;
-  if (memberId) pushSubscriptions.delete(memberId);
+  if (memberId) {
+    pushSubscriptions.delete(memberId);
+    savePushSubscriptions();
+  }
   res.json({ ok: true });
 });
 
@@ -223,6 +259,7 @@ io.on('connection', (socket) => {
       webpush.sendNotification(subscription, pushPayload).catch((err) => {
         if (err.statusCode === 410 || err.statusCode === 404) {
           pushSubscriptions.delete(subMemberId);
+          savePushSubscriptions();
           console.log(`[Push] 移除失效订阅: ${subMemberId}`);
         }
       });
