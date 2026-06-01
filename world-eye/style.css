@@ -710,6 +710,61 @@ html, body {
   opacity: 0.9;
 }
 
+/* 通知权限提示 */
+.push-prompt {
+  position: fixed;
+  bottom: 90px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1200;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  animation: slideUp 0.3s ease;
+}
+
+.push-prompt.hidden {
+  display: none;
+}
+
+.push-prompt-btn {
+  padding: 5px 14px;
+  background: #fff;
+  color: #667eea;
+  border: none;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.push-prompt-btn:hover {
+  opacity: 0.9;
+}
+
+.push-prompt-close {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 16px;
+  cursor: pointer;
+  padding: 0 2px;
+  line-height: 1;
+}
+
+.push-prompt-close:hover {
+  color: #fff;
+}
+
 /* 报警弹层 */
 .alarm-overlay {
   position: fixed;

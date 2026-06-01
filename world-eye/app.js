@@ -596,7 +596,7 @@ function doJoin(profile) {
   document.getElementById('stealth-btn').classList.remove('hidden');
   document.getElementById('alarm-btn').classList.remove('hidden');
 
-  requestNotificationPermission().then(() => subscribePush());
+  tryEnablePush();
 }
 
 document.getElementById('join-form').addEventListener('submit', (e) => {
@@ -836,11 +836,41 @@ function urlBase64ToUint8Array(base64String) {
 }
 
 async function requestNotificationPermission() {
-  if (!('Notification' in window)) return;
-  if (Notification.permission === 'granted') return;
-  if (Notification.permission === 'denied') return;
-  await Notification.requestPermission();
+  if (!('Notification' in window)) return false;
+  if (Notification.permission === 'granted') return true;
+  if (Notification.permission === 'denied') return false;
+  const result = await Notification.requestPermission();
+  return result === 'granted';
 }
+
+function tryEnablePush() {
+  if (!('Notification' in window) || !('PushManager' in window)) return;
+
+  if (Notification.permission === 'granted') {
+    subscribePush();
+    return;
+  }
+
+  if (Notification.permission === 'denied') return;
+
+  const dismissed = localStorage.getItem('world-eye-push-dismissed');
+  if (dismissed) return;
+
+  document.getElementById('push-prompt').classList.remove('hidden');
+}
+
+document.getElementById('push-prompt-btn').addEventListener('click', async () => {
+  document.getElementById('push-prompt').classList.add('hidden');
+  const granted = await requestNotificationPermission();
+  if (granted) {
+    subscribePush();
+  }
+});
+
+document.getElementById('push-prompt-close').addEventListener('click', () => {
+  document.getElementById('push-prompt').classList.add('hidden');
+  localStorage.setItem('world-eye-push-dismissed', '1');
+});
 
 // ========== 初始化 ==========
 document.addEventListener('click', function initAudio() {
