@@ -895,3 +895,23 @@ document.addEventListener('click', function initAudio() {
 
 registerServiceWorker();
 initMap();
+
+// ========== 调试信息（长按左上角在线人数显示） ==========
+let debugPressTimer = null;
+document.getElementById('online-count').addEventListener('touchstart', () => {
+  debugPressTimer = setTimeout(() => {
+    const info = [
+      'Notification: ' + ('Notification' in window),
+      'PushManager: ' + ('PushManager' in window),
+      'Permission: ' + (('Notification' in window) ? Notification.permission : 'N/A'),
+      'ServiceWorker: ' + ('serviceWorker' in navigator),
+      'MemberId: ' + (myMemberId || 'null'),
+      'HasJoined: ' + hasJoined,
+      'BACKEND: ' + BACKEND_URL
+    ];
+    alert(info.join('\n'));
+  }, 1500);
+});
+document.getElementById('online-count').addEventListener('touchend', () => {
+  if (debugPressTimer) clearTimeout(debugPressTimer);
+});
