@@ -844,18 +844,33 @@ async function requestNotificationPermission() {
 }
 
 function tryEnablePush() {
-  if (!('Notification' in window) || !('PushManager' in window)) return;
+  console.log('[观界天眼] tryEnablePush - Notification:', 'Notification' in window, 'PushManager:', 'PushManager' in window);
+
+  if (!('Notification' in window) || !('PushManager' in window)) {
+    console.warn('[观界天眼] 当前浏览器不支持通知或推送');
+    return;
+  }
+
+  console.log('[观界天眼] Notification.permission:', Notification.permission);
 
   if (Notification.permission === 'granted') {
+    console.log('[观界天眼] 已授权，直接订阅推送');
     subscribePush();
     return;
   }
 
-  if (Notification.permission === 'denied') return;
+  if (Notification.permission === 'denied') {
+    console.warn('[观界天眼] 通知权限已被拒绝');
+    return;
+  }
 
   const dismissed = localStorage.getItem('world-eye-push-dismissed');
-  if (dismissed) return;
+  if (dismissed) {
+    console.log('[观界天眼] 用户之前关闭了提示');
+    return;
+  }
 
+  console.log('[观界天眼] 显示通知权限提示条');
   document.getElementById('push-prompt').classList.remove('hidden');
 }
 
