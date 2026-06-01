@@ -595,6 +595,8 @@ function doJoin(profile) {
 
   document.getElementById('stealth-btn').classList.remove('hidden');
   document.getElementById('alarm-btn').classList.remove('hidden');
+
+  requestNotificationPermission().then(() => subscribePush());
 }
 
 document.getElementById('join-form').addEventListener('submit', (e) => {
@@ -657,6 +659,7 @@ socket.on('join-confirmed', (data) => {
   }
   saveProfile(profile);
   console.log('[观界天眼] 已保存档案:', profile);
+  subscribePush();
 });
 
 socket.on('sync-members', (members) => {
@@ -782,10 +785,68 @@ function startLocationWatch() {
   );
 }
 
+// ========== 推送通知 ==========
+async function registerServiceWorker() {
+  if (!('serviceWorker' in navigator)) return;
+  try {
+    const reg = await navigator.serviceWorker.register('sw.js');
+    console.log('[观界天眼] Service Worker 已注册');
+    return reg;
+  } catch (err) {
+    console.warn('[观界天眼] SW 注册失败:', err);
+  }
+}
+
+async function subscribePush() {
+  if (!('PushManager' in window) || !myMemberId) return;
+  try {
+    const reg = await navigator.serviceWorker.ready;
+
+    let sub = await reg.pushManager.getSubscription();
+    if (!sub) {
+      const res = await fetch(BACKEND_URL + '/api/vapid-public-key');
+      const { publicKey } = await res.json();
+      const applicationServerKey = urlBase64ToUint8Array(publicKey);
+      sub = await reg.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey
+      });
+    }
+
+    await fetch(BACKEND_URL + '/api/push-subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ memberId: myMemberId, subscription: sub })
+    });
+    console.log('[观界天眼] Push 已订阅');
+  } catch (err) {
+    console.warn('[观界天眼] Push 订阅失败:', err);
+  }
+}
+
+function urlBase64ToUint8Array(base64String) {
+  const padding = '='.repeat((4 - base64String.length % 4) % 4);
+  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+  const rawData = window.atob(base64);
+  const outputArray = new Uint8Array(rawData.length);
+  for (let i = 0; i < rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i);
+  }
+  return outputArray;
+}
+
+async function requestNotificationPermission() {
+  if (!('Notification' in window)) return;
+  if (Notification.permission === 'granted') return;
+  if (Notification.permission === 'denied') return;
+  await Notification.requestPermission();
+}
+
 // ========== 初始化 ==========
 document.addEventListener('click', function initAudio() {
   unlockAudio();
   document.removeEventListener('click', initAudio);
 }, { once: true });
 
+registerServiceWorker();
 initMap();

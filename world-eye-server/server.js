@@ -4,6 +4,7 @@ const { Server } = require('socket.io');
 const path = require('path');
 const fs = require('fs');
 const crypto = require('crypto');
+const webpush = require('web-push');
 
 const app = express();
 const server = http.createServer(app);
@@ -18,6 +19,15 @@ const io = new Server(server, {
   pingTimeout: 5000
 });
 
+const VAPID_PUBLIC_KEY = process.env.VAPID_PUBLIC_KEY || 'BCD06e9mGIVJisz8q51gUKAe51v5c6EbPz0bcn-eck_zmvnBADNCm9e-kJXxsJp0_HjHlibL2SRaF96hSWq32as';
+const VAPID_PRIVATE_KEY = process.env.VAPID_PRIVATE_KEY || 'zdCYH0QKeWQPzPi7ew22m24jv8lPrCmgAffNioFHth8';
+
+webpush.setVapidDetails(
+  'mailto:worldeye@example.com',
+  VAPID_PUBLIC_KEY,
+  VAPID_PRIVATE_KEY
+);
+
 const frontendPath = path.join(__dirname, '..', 'world-eye');
 if (fs.existsSync(frontendPath)) {
   app.use(express.static(frontendPath));
@@ -31,6 +41,7 @@ const INACTIVE_DAYS = 90;
 
 const members = new Map();
 const onlineSockets = new Map();
+const pushSubscriptions = new Map();
 
 function loadMembers() {
   try {
@@ -79,6 +90,26 @@ app.get('/health', (req, res) => {
 
 app.get('/api/members', (req, res) => {
   res.json(getMembersWithStatus());
+});
+
+app.get('/api/vapid-public-key', (req, res) => {
+  res.json({ publicKey: VAPID_PUBLIC_KEY });
+});
+
+app.post('/api/push-subscribe', (req, res) => {
+  const { memberId, subscription } = req.body;
+  if (!memberId || !subscription) {
+    return res.status(400).json({ error: 'missing memberId or subscription' });
+  }
+  pushSubscriptions.set(memberId, subscription);
+  console.log(`[${new Date().toISOString()}] Push 订阅: ${memberId}, 总订阅: ${pushSubscriptions.size}`);
+  res.json({ ok: true });
+});
+
+app.post('/api/push-unsubscribe', (req, res) => {
+  const { memberId } = req.body;
+  if (memberId) pushSubscriptions.delete(memberId);
+  res.json({ ok: true });
 });
 
 // ==================== 工具函数 ====================
@@ -167,13 +198,35 @@ io.on('connection', (socket) => {
     const member = members.get(memberId);
     if (!member) return;
     console.log(`[${new Date().toISOString()}] 🚨 ${member.name} 发出报警`);
-    socket.broadcast.emit('alarm-received', {
+
+    const alarmData = {
       memberId,
       name: member.name,
       lat: member.lat,
       lng: member.lng,
       timestamp: Date.now()
+    };
+
+    socket.broadcast.emit('alarm-received', alarmData);
+
+    const pushPayload = JSON.stringify({
+      title: `🚨 ${member.name} 发出紧急报警`,
+      body: '请立即查看！点击打开观界天眼定位 TA',
+      memberId: member.memberId,
+      name: member.name,
+      lat: member.lat,
+      lng: member.lng
     });
+
+    for (const [subMemberId, subscription] of pushSubscriptions) {
+      if (subMemberId === memberId) continue;
+      webpush.sendNotification(subscription, pushPayload).catch((err) => {
+        if (err.statusCode === 410 || err.statusCode === 404) {
+          pushSubscriptions.delete(subMemberId);
+          console.log(`[Push] 移除失效订阅: ${subMemberId}`);
+        }
+      });
+    }
   });
 
   socket.on('toggle-stealth', (data) => {
