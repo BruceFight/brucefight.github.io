@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>音乐播放器 - 踏天九桥</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+<body>
+  <div class="player-app">
+    <!-- 顶部导航 -->
+    <header class="player-header">
+      <a href="/" class="back-btn"><i class="fas fa-arrow-left"></i></a>
+      <h1>音乐播放器</h1>
+      <div class="header-spacer"></div>
+    </header>
+
+    <!-- 搜索栏 -->
+    <div class="search-bar">
+      <i class="fas fa-search search-icon"></i>
+      <input type="text" id="search-input" placeholder="搜索歌曲、歌手..." />
+      <button id="search-btn" class="search-submit"><i class="fas fa-arrow-right"></i></button>
+    </div>
+
+    <!-- 标签页切换 -->
+    <div class="tab-bar">
+      <button class="tab-btn active" data-tab="local">
+        <i class="fas fa-folder-open"></i> 我的音乐
+      </button>
+      <button class="tab-btn" data-tab="search">
+        <i class="fas fa-globe"></i> 在线搜索
+      </button>
+    </div>
+
+    <!-- 本地歌曲列表 -->
+    <div class="tab-content active" id="tab-local">
+      <div class="song-list" id="local-list"></div>
+    </div>
+
+    <!-- 搜索结果列表 -->
+    <div class="tab-content" id="tab-search">
+      <div class="search-hint" id="search-hint">
+        <i class="fas fa-music"></i>
+        <p>搜索你想听的音乐</p>
+      </div>
+      <div class="song-list" id="search-list"></div>
+    </div>
+
+    <!-- 底部播放控件 -->
+    <div class="player-bar" id="player-bar">
+      <div class="progress-container" id="progress-container">
+        <div class="progress-bar" id="progress-bar"></div>
+      </div>
+      <div class="player-controls">
+        <div class="now-playing" id="now-playing">
+          <div class="song-thumb" id="song-thumb">
+            <i class="fas fa-music"></i>
+          </div>
+          <div class="song-meta">
+            <div class="song-title" id="current-title">未播放</div>
+            <div class="song-artist" id="current-artist">-</div>
+          </div>
+        </div>
+        <div class="control-buttons">
+          <button class="ctrl-btn" id="prev-btn"><i class="fas fa-backward-step"></i></button>
+          <button class="ctrl-btn play-btn" id="play-btn"><i class="fas fa-play"></i></button>
+          <button class="ctrl-btn" id="next-btn"><i class="fas fa-forward-step"></i></button>
+          <button class="ctrl-btn mode-btn" id="mode-btn" title="循环模式"><i class="fas fa-repeat"></i></button>
+        </div>
+      </div>
+      <div class="time-display">
+        <span id="current-time">0:00</span>
+        <span id="total-time">0:00</span>
+      </div>
+    </div>
+  </div>
+
+  <audio id="audio-player" preload="auto"></audio>
+  <script>document.write('<script src="player.js?v=' + Date.now() + '"><\/script>');</script>
+</body>
+</html>
